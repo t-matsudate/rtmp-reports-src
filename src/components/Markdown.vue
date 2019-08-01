@@ -21,6 +21,7 @@ import Include from 'markdown-it-include';
 import Imsize from 'markdown-it-imsize';
 import LinkifyImages from 'markdown-it-linkify-images';
 import Underline from 'markdown-it-underline';
+import Katex from '@neilsustc/markdown-it-katex';
 import hljs from 'highlight.js';
 
 export default {
@@ -55,9 +56,16 @@ export default {
       ).use(
         Abbr
       ).use(
-        Anchor
+        Anchor,
+        {
+          permalink: true,
+          permalinkBefore: true
+        }
       ).use(
-        Toc
+        Toc,
+        {
+          includeLevel: [1, 2, 3, 4]
+        }
       ).use(
         TaskLists
       ).use(
@@ -80,6 +88,8 @@ export default {
         LinkifyImages
       ).use(
         Underline
+      ).use(
+        Katex
       )
     };
   },
@@ -93,6 +103,7 @@ export default {
 
 <style lang="less">
 @import (css) "~github-markdown-css/github-markdown.css";
+@import (css) "~katex/dist/katex.min.css";
 
 #grids {
   #main {
@@ -102,7 +113,16 @@ export default {
           padding: 1em;
           font-family: serif;
 
+          strong {
+            font-weight: bold;
+          }
+
+          em {
+            font-style: italic;
+          }
+
           &:extend(.markdown-body all);
+          &:extend(.katex all);
         }
       }
     }
