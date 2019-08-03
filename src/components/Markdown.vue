@@ -41,7 +41,7 @@ export default {
         highlight(str, lang) {
           if (lang && hljs.getLanguage(lang)) {
             try {
-              return hljs.highlight(lang, str).value;
+              return '<pre class="hljs"><code>' + hljs.highlight(lang, str).value + '</code></pre>';
             } catch (err) {
               return err;
             }
@@ -119,6 +119,62 @@ export default {
 
           em {
             font-style: italic;
+          }
+
+          .hljs {
+            /* 4K */
+            @media (orientation: landscape) and (max-width: 3840px) {
+              max-width: 3072px;
+            }
+
+            @media (orientation: portrait) and (max-width: 2160px) {
+              max-width: 1728px;
+            }
+
+            /* WQHD */
+            @media (orientation: landscape) and (max-width: 2560px) {
+              max-width: 2048px;
+            }
+
+            @media (orientation: portrait) and (max-width: 1440px) {
+              max-width: 1152px;
+            }
+
+            /* Desktop or Laptop (Full HD) */
+            @media (orientation: landscape) and (max-width: 1920px) {
+              max-width: 1536px;
+            }
+
+            @media (orientation: portrait) and (max-width: 1080px) {
+              max-width: 864px;
+            }
+
+            /* iPad (up to 12 inchs) */
+            @media (orientation: landscape) and (max-width: 1366px) {
+              max-width: 1092px;
+            }
+
+            @media (orientation: portrait) and (max-width: 1024px) {
+              max-width: 819px;
+            }
+
+            /* iPhone (up to X) */
+            @media (orientation: landscape) and (max-width: 812px) {
+              max-width: 649px;
+            }
+
+            @media (orientation: portrait) and (max-width: 375px) {
+              max-width: 300px;
+            }
+
+            /* Android (based on Pixel XL) */
+            @media (orientation: landscape) and (max-width: 640px) {
+              max-width: 512px;
+            }
+
+            @media (orientation: portrait) and (max-width: 360px) {
+              max-width: 288px;
+            }
           }
 
           &:extend(.markdown-body all);
