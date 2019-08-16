@@ -64,7 +64,7 @@ export default {
       ).use(
         Toc,
         {
-          includeLevel: [1, 2, 3, 4]
+          includeLevel: [2, 3, 4, 5]
         }
       ).use(
         TaskLists
@@ -79,7 +79,11 @@ export default {
       ).use(
         ImplicitFigures
       ).use(
-        MultimdTable
+        MultimdTable,
+        {
+          enableRowspan: true,
+          enableMultilineRows: true
+        }
       ).use(
         Include
       ).use(
