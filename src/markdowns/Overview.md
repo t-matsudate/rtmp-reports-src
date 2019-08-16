@@ -1332,7 +1332,7 @@ if (prev_pkt[channel_id].read && size != prev_pkt[channel_id].size) {
 5. Chunk Size
 6. **Invoke(\_result)**
 
-すると上記のエラーメッセージは発されなくなったが, 今度は Invoke(onBWDone) チャンクを送る前の段階で FFmpeg から新たな要求メッセージを受信した. これ(ら)は Invoke(createStream) チャンクとそれに付随して送信される**新仕様の** Invoke メッセージである.
+すると上記のエラーメッセージは発されなくなったが, 今度は Invoke(onBWDone) チャンクを送信する前の段階で FFmpeg から新たな要求メッセージを受信した. これ(ら)は Invoke(createStream) チャンクとそれに付随して送信される**新仕様の** Invoke メッセージである.
 
 ### パケットのメッセージフォーマット
 ## 映像/音声データに利用できるコーデック
