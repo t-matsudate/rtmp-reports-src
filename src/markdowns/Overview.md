@@ -1165,10 +1165,21 @@ if (ret < 0)
 
 <div id="rtmp-invoke-connect-sequences-official"></div>
 
-1. Window Acknowledgement Size / Server BandWidth
-2. Set Peer Bandwidth / Client BandWidth
-3. User Control(Stream Begin)
-4. Invoke(\_result)
+> The message flow during the execution of the command is:
+>
+> 1. Client sends the connect command to the server to request to connect with the server application instance.
+> 2. After receiving the connect command, the server sends the protocol message ’Window Acknowledgement Size’ to the client. The server also connects to the application mentioned in the connect command.
+> 3. The server sends the protocol message ’Set Peer Bandwidth’ to the client.
+> 4. The client sends the protocol message ’Window Acknowledgement Size’ to the server after processing the protocol message ’Set Peer Bandwidth’.
+> 5. The server sends an another protocol message of type User Control Message(StreamBegin) to the client.
+> 6. The server sends the result command message informing the client of the connection status (success/fail). The command specifies the transaction ID (always equal to 1 for the connect command). The message also specifies the properties, such as Flash Media Server version (string). In addition it specificies other connection response related information like level (string), code (string), description (string), objectencoding (number), etc.
+
+* クライアント側はサーバ側のアプリケーションとの接続を要求するために, サーバ側に Invoke(connect) を送信する.
+* Invoke(connect) の受信後, サーバ側は プロトコルメッセージ Window Acknowledgement Size / Client BandWidth をクライアント側に送信する. サーバ側もまた connect コマンドで指定されたアプリケーションに接続する.
+* サーバ側はクライアント側にプロトコルメッセージ Set Peer BandWidth / Client BandWidth をクライアント側に送信する.
+* Set Peer BandWidth / Client BandWidth の処理後に, クライアント側はサーバ側にプロトコルメッセージ Window Acknowledgement Size / Server BandWidth を送信する.
+* サーバ側はクライアント側に他のプロトコルメッセージである User Control (Stream Begin) を送信する.
+* サーバ側はクライアント側にクライアント側の接続状態を通知する Invoke(\_result) を送信する.
 
 以下に FFmpeg が実際に送信しているメッセージを示す.
 
@@ -1283,12 +1294,14 @@ ff_rtmp_packet_destroy(&pkt);
 
 <div id="rtmp-invoke-connect-sequences-ffmpeg"></div>
 
-1. Window Acknowledgement Size / Server BandWidth
-2. Set Peer Bandwidth / Client BandWidth
-3. User Control(Stream Begin)
-4. **Chunk Size**
-5. Invoke(\_result)
-6. **Invoke(onBWDone)**
+以下の項目はすべてサーバ側からクライアント側への送信として記述する.
+
+1. Window Acknowledgement Size / Server BandWidth を送信する.
+2. Set Peer Bandwidth / Client BandWidth を送信する.
+3. User Control (Stream Begin) を送信する.
+4. **Chunk Size** を送信する.
+5. Invoke(\_result) を送信する.
+6. **Invoke(onBWDone)** を送信する.
 
 公式ドキュメントが公開された RTMP 1.0 当時と最新の RTMP クライアント/サーバとで手順に変更があることを確認できる. しかし, どちらの手順もアプリケーション接続に**失敗**する.
 
@@ -1325,12 +1338,14 @@ if (prev_pkt[channel_id].read && size != prev_pkt[channel_id].size) {
 
 <div id="rtmp-invoke-connect-sequences-fixed"></div>
 
-1. **Invoke(\_result)**
-2. Window Acknowledgement Size / Server BandWidth
-3. Set Peer Bandwidth / Client BandWidth
-4. User Control(Stream Begin)
-5. Chunk Size
-6. **Invoke(\_result)**
+以下の項目もサーバ側からクライアント側への送信として記述する.
+
+1. **Invoke(\_result)** を送信する.
+2. Window Acknowledgement Size / Server BandWidth を送信する.
+3. Set Peer Bandwidth / Client BandWidth を送信する.
+4. User Control(Stream Begin) を送信する.
+5. Chunk Size を送信する.
+6. **Invoke(\_result)** を送信する.
 
 すると上記のエラーメッセージは発されなくなったが, 今度は Invoke(onBWDone) チャンクを送信する前の段階で FFmpeg から新たな要求メッセージを受信した. これ(ら)は Invoke(createStream) チャンクとそれに付随して送信される**新仕様の** Invoke メッセージである.
 
