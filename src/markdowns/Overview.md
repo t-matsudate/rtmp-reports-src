@@ -69,9 +69,10 @@ RTMP ハンドシェイクの手順は[公式ドキュメント](http://wwwimage
 > The client MUST wait until S1 has been received before sending C2.
 > The client MUST wait until S2 has been received before sending any other data.
 >
-> The server MUST wait until C0 has been received before sending S0 and S1, and MAY wait until after C1 as well.  
-> The server MUST wait until C1 has been received before sending S2.  
-> The server MUST wait until C2 has been received before sending any other data.  
+> The server MUST wait until C0 has been received before sending S0 and S1, and MAY wait until after C1 as well.
+> The server MUST wait until C1 has been received before sending S2.
+> The server MUST wait until C2 has been received before sending any other data.
+
 
 * ハンドシェイクはクライアント側がサーバ側に C0 チャンクと C1 チャンクを送信することで始まる.
 * クライアント側は C2 チャンクの送信前に S1 の受信を待た**なければならない**.
