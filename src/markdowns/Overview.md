@@ -58,16 +58,48 @@ Java 言語で実装されたマルチメディアサーバである. RTMP を�
 
 ### RTMP ハンドシェイク
 
-RTMP 層におけるハンドシェイクは以下の手順で行う.
+RTMP ハンドシェイクの手順は[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
 
-<div id="rtmp-handshake-sequences"></div>
+<div id="rtmp-handshake-sequences-official"></div>
 
-1. クライアント側はサーバ側に C0 チャンクと C1 チャンクをそれぞれ送信する.
-2. サーバ側はクライアント側から C0 チャンク と C1 チャンクをそれぞれ受信したなら, S0 チャンク, S1 チャンクおよび S2 チャンクをそれぞれクライアント側に送信する.
-3. クライアント側はサーバ側から S0 チャンク, S1 チャンクおよび S2 チャンクをそれぞれ受信したなら, C2 チャンクをサーバ側へ送信する.
-4. サーバ側はクライアント側から C2 チャンクを受け取ったなら, アプリケーション接続に移行する.
+> 5.2.1.  Handshake Sequence
+>
+> The handshake begins with the client sending the C0 and C1 chunks.
+>
+> The client MUST wait until S1 has been received before sending C2.
+> The client MUST wait until S2 has been received before sending any other data.
+>
+> The server MUST wait until C0 has been received before sending S0 and S1, and MAY wait until after C1 as well.  
+> The server MUST wait until C1 has been received before sending S2.  
+> The server MUST wait until C2 has been received before sending any other data.  
 
-各種チャンクのフィールドの仕様は, [公式のドキュメント(PDF)](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)によると以下の通りである.
+* ハンドシェイクはクライアント側がサーバ側に C0 チャンクと C1 チャンクを送信することで始まる.
+* クライアント側は C2 チャンクの送信前に S1 の受信を待た**なければならない**.
+* クライアント側はその後の他のチャンクの送信前に S2 チャンクの受信を待た**なければならない**.
+* サーバ側は S2 チャンクの送信前に C1 チャンクの受信を待た**なければならない**.
+* サーバ側はその後の他のチャンクの送信前に C2 チャンクの受信を待た**なければならない**.
+
+> The following describes the states mentioned in the handshake diagram:
+>
+> Uninitialized: The protocol version is sent during this stage. Both the client and server are uninitialized. The The client sends the protocol version in packet C0. If the server supports the version, it sends S0 and S1 in response. If not, the server responds by taking the appropriate action. In RTMP, this action is terminating the connection.
+>
+> Version Sent:  Both client and server are in the Version Sent state after the Uninitialized state. The client is waiting for the packet S1 and the server is waiting for the packet C1. On receiving the awaited packets, the client sends the packet C2 and the server sends the packet S2. The state then becomes Ack Sent. Ack Sent The client and the server wait for S2 and C2 respectively.
+>
+> Handshake Done: The client and the server exchange messages.
+
+* 未初期化
+
+プロトコルのバージョンが送信される. クライアント側もサーバ側も未初期化である. クライアント側はプロトコルのバージョンを C0 パケットで送信する. サーバ側はそのバージョンをサポートしているならば, クライアント側に応答メッセージで S0 パケットと S1 パケットを送信する. そうでなければ, サーバ側は適切なアクションをとって応答メッセージを送信する. RTMP では, そのアクションは接続の終了である.
+
+* バージョンが送信された
+
+サーバ側もクライアント側も未初期化状態の後はバージョンが送信された状態である. クライアント側は S1 パケットを待ちサーバ側は C1 パケットを待つ. 待機パケットの受信時に, クライアント側はサーバ側に C2 パケットを送信し, サーバ側はクライアント側に S2 パケットを送信する. それから肯定応答が送信された状態になる.
+
+* ハンドシェイク完了
+
+クライアント側とサーバ側はメッセージを交換する.
+
+各種チャンクのフィールドは, [公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
 
 #### C0 チャンクおよび S0 チャンク
 
@@ -485,9 +517,18 @@ if (!Arrays.equals(s1, c2)) {
 
 ただし, Flash Player 9 および Adobe Media Server 3 以上の場合は C1 チャンクおよび S1 チャンクのランダムバイト列の末尾 32 bytes を HMAC-SHA256 で求めたダイジェストに置き換えて送受信を行い, 受信時に[メッセージの位置を探し当てて](#fp9)ダイジェストと照合することでメッセージの正当性を検証する必要がある.
 
+上記の各実装より, 現在の RTMP 層におけるハンドシェイクの手順は以下に要約できる.
+
+<div id="rtmp-handshake-sequences-current"></div>
+
+1. クライアント側はサーバ側に C0 チャンクと C1 チャンクをそれぞれ送信する.
+2. サーバ側はクライアント側から C0 チャンク と C1 チャンクをそれぞれ受信したなら, S0 チャンク, S1 チャンクおよび S2 チャンクをそれぞれクライアント側に送信する.
+3. クライアント側はサーバ側から S0 チャンク, S1 チャンクおよび S2 チャンクをそれぞれ受信したなら, C2 チャンクをサーバ側へ送信する.
+4. サーバ側はクライアント側から C2 チャンクを受け取ったなら, アプリケーション接続に移行する.
+
 ### Invoke(connect) から映像データの受信まで
 
-RTMP層におけるハンドシェイクが完了したなら, サーバ側とクライアント側は映像の送受信に必要な情報を相互に伝達しあう. それは以下の手順で行う.
+RTMP 層におけるハンドシェイクが完了したなら, サーバ側とクライアント側は映像の送受信に必要な情報を相互に伝達しあう. それは以下の手順で行う.
 
 <div id="rtmp-application-connect-sequences"></div>
 
