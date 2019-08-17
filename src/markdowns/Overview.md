@@ -81,10 +81,8 @@ RTMP ハンドシェイクの手順は[公式ドキュメント](http://wwwimage
 
 > The following describes the states mentioned in the handshake diagram:
 >
-> Uninitialized: The protocol version is sent during this stage. Both the client and server are uninitialized. The The client sends the protocol version in packet C0. If the server supports the version, it sends S0 and S1 in response. If not, the server responds by taking the appropriate action. In RTMP, this action is terminating the connection.
->
-> Version Sent:  Both client and server are in the Version Sent state after the Uninitialized state. The client is waiting for the packet S1 and the server is waiting for the packet C1. On receiving the awaited packets, the client sends the packet C2 and the server sends the packet S2. The state then becomes Ack Sent. Ack Sent The client and the server wait for S2 and C2 respectively.
->
+> Uninitialized: The protocol version is sent during this stage. Both the client and server are uninitialized. The The client sends the protocol version in packet C0. If the server supports the version, it sends S0 and S1 in response. If not, the server responds by taking the appropriate action. In RTMP, this action is terminating the connection.  
+> Version Sent:  Both client and server are in the Version Sent state after the Uninitialized state. The client is waiting for the packet S1 and the server is waiting for the packet C1. On receiving the awaited packets, the client sends the packet C2 and the server sends the packet S2. The state then becomes Ack Sent. Ack Sent The client and the server wait for S2 and C2 respectively.  
 > Handshake Done: The client and the server exchange messages.
 
 * 未初期化
@@ -571,11 +569,11 @@ Type 0 (11 bytes):
 
 * タイムスタンプ (3 bytes)
   * チャンクストリームの送信を開始した時点のタイムスタンプを入力する.
-  * タイムスタンプが 0xFFFFFF より大きくなる場合は溢れる分を後述の拡張タイムスタンプフィールドに入力し, このフィールドの値を 0xFFFFFF で固定する.
+  * タイムスタンプが 0xFFFFFF より大きくなる場合は後述の拡張タイムスタンプフィールドに入力し, このフィールドの値を 0xFFFFFF で固定する.
 * メッセージ長 (3 bytes)
   * チャンクデータの長さを入力する. ただし, チャンクデータ自体の長さしか考慮されていない. (詳細は後述する)
 * メッセージ種類 ID (1 byte)
-  * 後に続くチャンクデータの種類を入力する. 現在仕様書に存在している, または利用が確認されている種別は[メッセージの種類](#メッセージの種類)を参照.
+  * 後に続くチャンクデータの種類を入力する. 現在仕様書に存在している, または利用が確認されている種類は[メッセージの種類](#メッセージの種類)を参照.
 * メッセージストリーム ID (4 bytes)
   * アプリケーション間接続が完全に成功した際にサーバ側から割り振られる.
   * チャンクストリームの中ではこの ID を利用して相互に存在を保証しあうため, 一意である必要がある.
@@ -587,8 +585,7 @@ Type 1 (7 bytes):
 音声・映像チャンク等の可変かつ複数のデータを同時に送信するような場合は, 2 番目に送るチャンクのチャンクメッセージヘッダをこの Type 1 パターンに**すべきである**.
 
 * タイムスタンプ (3 bytes)
-  * Type 0 パターンが送られた時点からのタイムスタンプの**増分**を入力する.
-    * ほとんどの場合において, 現在時刻と Type 0 パターンのチャンクのタイムスタンプとの差が利用されている.
+  * Type 0 パターンが送られた時点からのタイムスタンプの**差分**を入力する.
   * Type 0 パターンと同様に, 0xFFFFFF より大きくなる場合は拡張タイムスタンプを利用する.
 * メッセージ長 (3 bytes)
   * Type 0 パターンと同様である.
@@ -601,7 +598,7 @@ Type 2 (3 bytes):
 固定長の同一種別のチャンクデータを同じメッセージストリームに送信し続けるような場合は, 2 番目に送るチャンクのチャンクメッセージヘッダをこの Type 2 パターンに**すべきである**.
 
 * タイムスタンプ (3 bytes)
-  * Type 1 パターンと同様の**増分**である.
+  * Type 1 パターンと同様の**差分**である.
   * タイムスタンプが 0xFFFFFF より大きくなる場合も Type 1 と同様にする.
 
 Type 3 (0 byte):
@@ -624,7 +621,7 @@ Type 3 (0 byte):
 
 3. 拡張タイムスタンプ (4 bytes)
 
-チャンクメッセージヘッダのタイムスタンプが 0xFFFFFF より大きくなった場合に, その溢れた分を当該フィールドに入力する.  この場合, 実際に計上することになるタイムスタンプは 0xFFFFFF + 拡張タイムスタンプの値 となり, その最大値は 0xFFFFFF + 0xFFFFFFFF である.  
+入力するタイムスタンプが 0xFFFFFF より大きくなった場合に, そのタイムスタンプをチャンクメッセージヘッダのタイムスタンプフィールドに入力する代わりに当該フィールドに入力する. この場合, 実際に計上することになるタイムスタンプは 0xFFFFFF + 拡張タイムスタンプの値 となり, その最大値は 0xFFFFFF + 0xFFFFFFFF である.  
 タイムスタンプを拡張する必要がない場合はこのフィールドは入力されないため, 無視してチャンクデータを読むように実装する必要もある.
 
 4. チャンクデータ (可変)
