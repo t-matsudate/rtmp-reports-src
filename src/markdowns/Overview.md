@@ -1347,7 +1347,330 @@ if (prev_pkt[channel_id].read && size != prev_pkt[channel_id].size) {
 5. Chunk Size を送信する.
 6. **Invoke(\_result)** を送信する.
 
-すると上記のエラーメッセージは発されなくなったが, 今度は Invoke(onBWDone) チャンクを送信する前の段階で FFmpeg から新たな要求メッセージを受信した. これ(ら)は Invoke(createStream) チャンクとそれに付随して送信される**新仕様の** Invoke メッセージである.
+すると上記のエラーメッセージは発されなくなったが, 今度は Invoke(onBWDone) チャンクを送信する前の段階で FFmpeg から新たな要求メッセージを受信した. それ(ら)は Invoke(createStream) チャンクとそれに付随して送信される**新仕様の** Invoke メッセージである.
+
+#### Invoke(releaseStream), Invoke(FCPublish), Invoke(createStream)
+
+Invoke(connect) での接続処理が終わった後に, 3 つに繋がった何らかのチャンクを受信する. それらは Invoke(createStream) と各種製品が公式ドキュメントの公開よりも後に実装した要求メッセージである.
+
+1. Invoke(releaseStream)
+
+Invoke(releaseStream) チャンクとその応答メッセージは FFmpeg および OBS によると以下の構造であるようだ.
+
+[FFmpeg/rtmpproto.c#L593-L615](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L593-L615)
+[FFmpeg/rtmpproto.c#L1981-L1999](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1981-L1999)
+
+```c
+/**
+ * Generate 'releaseStream' call and send it to the server. It should make
+ * the server release some channel for media streams.
+ */
+static int gen_release_stream(URLContext *s, RTMPContext *rt)
+{
+    RTMPPacket pkt;
+    uint8_t *p;
+    int ret;
+
+    if ((ret = ff_rtmp_packet_create(&pkt, RTMP_SYSTEM_CHANNEL, RTMP_PT_INVOKE,
+                                     0, 29 + strlen(rt->playpath))) < 0)
+        return ret;
+
+    av_log(s, AV_LOG_DEBUG, "Releasing stream...\n");
+    p = pkt.data;
+    ff_amf_write_string(&p, "releaseStream");
+    ff_amf_write_number(&p, ++rt->nb_invokes);
+    ff_amf_write_null(&p);
+    ff_amf_write_string(&p, rt->playpath);
+
+    return rtmp_send_packet(rt, &pkt, 1);
+}
+
+// 中略
+
+if ((ret = ff_rtmp_packet_create(&spkt, RTMP_SYSTEM_CHANNEL,
+                                 RTMP_PT_INVOKE, 0,
+                                 RTMP_PKTDATA_DEFAULT_SIZE)) < 0) {
+    av_log(s, AV_LOG_ERROR, "Unable to create response packet\n");
+    return ret;
+}
+pp = spkt.data;
+ff_amf_write_string(&pp, "_result");
+ff_amf_write_number(&pp, seqnum);
+ff_amf_write_null(&pp);
+if (!strcmp(command, "createStream")) {
+    rt->nb_streamid++;
+    if (rt->nb_streamid == 0 || rt->nb_streamid == 2)
+        rt->nb_streamid++; /* Values 0 and 2 are reserved */
+    ff_amf_write_number(&pp, rt->nb_streamid);
+    /* By now we don't control which streams are removed in
+     * deleteStream. There is no stream creation control
+     * if a client creates more than 2^32 - 2 streams. */
+}
+```
+
+[obs-studio/rtmp.c#L1990-L2016](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1990-L2016)
+
+```c
+static int
+SendReleaseStream(RTMP *r, int streamIdx)
+{
+    RTMPPacket packet;
+    char pbuf[1024], *pend = pbuf + sizeof(pbuf);
+    char *enc;
+
+    packet.m_nChannel = 0x03;	/* control channel (invoke) */
+    packet.m_headerType = RTMP_PACKET_SIZE_MEDIUM;
+    packet.m_packetType = RTMP_PACKET_TYPE_INVOKE;
+    packet.m_nTimeStamp = 0;
+    packet.m_nInfoField2 = 0;
+    packet.m_hasAbsTimestamp = 0;
+    packet.m_body = pbuf + RTMP_MAX_HEADER_SIZE;
+
+    enc = packet.m_body;
+    enc = AMF_EncodeString(enc, pend, &av_releaseStream);
+    enc = AMF_EncodeNumber(enc, pend, ++r->m_numInvokes);
+    *enc++ = AMF_NULL;
+    enc = AMF_EncodeString(enc, pend, &r->Link.streams[streamIdx].playpath);
+    if (!enc)
+        return FALSE;
+
+    packet.m_nBodySize = enc - packet.m_body;
+
+    return RTMP_SendPacket(r, &packet, FALSE);
+}
+```
+
+要求メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|releaseStream|
+|トランザクション ID|Number|2.<br>Invoke(connect) に割り振られたトランザクション ID より 1 多い値を割り振るようだ.|
+|Null|Null|AMF における Null.<br>コマンドオブジェクトなどを入力しない場合はトランザクション ID の直後にこの値を 1 つ入力するようだ.|
+|**playpath**|String|mp4やmp3などのファイル名. mp4: などのプリフィックスを付けることができる.<br>起動時に渡される URL から参照する.<br>そのパターンは次の通りである: protocol://server[:port][/app][/playpath]|
+
+応答メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|\_result<br>もしくは<br>\_error|
+|トランザクション ID|Number|2.<br>Invoke(releaseStream) チャンクに入力されているものと同じものを使用する.|
+|Null|Null|AMF における Null.<br>プロパティなどを入力しない場合はこの値を 1 つ入力するようだ.|
+
+2. Invoke(FCPublish)
+
+Invoke(FCPublish) とその応答メッセージの構造は FFmpeg および OBS によると以下の構造であるようだ.
+
+[FFmpeg/rtmpproto.c#L641-L663](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L641-L663)
+[FFmpeg/rtmpproto.c#L1956-L1965](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1956-L1965)
+
+```c
+/**
+ * Generate 'FCPublish' call and send it to the server. It should make
+ * the server prepare for receiving media streams.
+ */
+static int gen_fcpublish_stream(URLContext *s, RTMPContext *rt)
+{
+    RTMPPacket pkt;
+    uint8_t *p;
+    int ret;
+
+    if ((ret = ff_rtmp_packet_create(&pkt, RTMP_SYSTEM_CHANNEL, RTMP_PT_INVOKE,
+                                     0, 25 + strlen(rt->playpath))) < 0)
+        return ret;
+
+    av_log(s, AV_LOG_DEBUG, "FCPublish stream...\n");
+    p = pkt.data;
+    ff_amf_write_string(&p, "FCPublish");
+    ff_amf_write_number(&p, ++rt->nb_invokes);
+    ff_amf_write_null(&p);
+    ff_amf_write_string(&p, rt->playpath);
+
+    return rtmp_send_packet(rt, &pkt, 1);
+}
+
+// 中略
+
+if (!strcmp(command, "FCPublish")) {
+    if ((ret = ff_rtmp_packet_create(&spkt, RTMP_SYSTEM_CHANNEL,
+                                     RTMP_PT_INVOKE, 0,
+                                     RTMP_PKTDATA_DEFAULT_SIZE)) < 0) {
+        av_log(s, AV_LOG_ERROR, "Unable to create response packet\n");
+        return ret;
+    }
+    pp = spkt.data;
+    ff_amf_write_string(&pp, "onFCPublish");
+}
+```
+
+[obs-studio/rtmp.c#L2020-L2046](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L2020-L2046)
+
+```c
+static int
+SendFCPublish(RTMP *r, int streamIdx)
+{
+    RTMPPacket packet;
+    char pbuf[1024], *pend = pbuf + sizeof(pbuf);
+    char *enc;
+
+    packet.m_nChannel = 0x03;	/* control channel (invoke) */
+    packet.m_headerType = RTMP_PACKET_SIZE_MEDIUM;
+    packet.m_packetType = RTMP_PACKET_TYPE_INVOKE;
+    packet.m_nTimeStamp = 0;
+    packet.m_nInfoField2 = 0;
+    packet.m_hasAbsTimestamp = 0;
+    packet.m_body = pbuf + RTMP_MAX_HEADER_SIZE;
+
+    enc = packet.m_body;
+    enc = AMF_EncodeString(enc, pend, &av_FCPublish);
+    enc = AMF_EncodeNumber(enc, pend, ++r->m_numInvokes);
+    *enc++ = AMF_NULL;
+    enc = AMF_EncodeString(enc, pend, &r->Link.streams[streamIdx].playpath);
+    if (!enc)
+        return FALSE;
+
+    packet.m_nBodySize = enc - packet.m_body;
+
+    return RTMP_SendPacket(r, &packet, FALSE);
+}
+```
+
+要求メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|FCPublish|
+|トランザクション ID|Number|3.<br>Invoke(releaseStream) に割り振られた値より 1 多い値を割り振るようだ.|
+|Null|Null|AMF における Null.|
+|playpath|String|Invoke(releaseStream) に入力されたものと同じ値を入力する.|
+
+応答メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|onFCPublish|
+
+3. Invoke(createStream)
+
+Invoke(createStream) メッセージは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+
+要求メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|createStream|
+|トランザクション ID|Number|コマンドのトランザクション ID.|
+|コマンドオブジェクト|Object<br>または<br>Null|当該コマンドに設定する情報がある場合は Invoke(connect) と同じフォーマットのコマンドオブジェクトを入力する.<br>そうでなければ AMF における Null を入力する.|
+
+応答メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|\_result<br>または<br>\_error|
+|トランザクション ID.|Number|応答メッセージが属するコマンドの ID.|
+|コマンドオブジェクト|Object<br>または<br>Null|当該応答メッセージに設定する情報がある場合は Invoke(createStream) と同じフォーマットのコマンドオブジェクトを入力する.<br>そうでなければ AMF における Null を入力する.|
+|**メッセージストリーム ID**|Number|メッセージストリーム ID か**エラー情報が入力されたインフォメーションオブジェクト**を入力する.|
+
+他方で FFmpeg および OBS では以下の構造であるようだ.
+
+[FFmpeg/rtmpproto.c#L665-L687](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L665-L687)
+[FFmpeg/rtmpproto.c#L1981-L1999](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1981-L1999)
+
+```c
+/**
+ * Generate 'createStream' call and send it to the server. It should make
+ * the server allocate some channel for media streams.
+ */
+static int gen_create_stream(URLContext *s, RTMPContext *rt)
+{
+    RTMPPacket pkt;
+    uint8_t *p;
+    int ret;
+
+    av_log(s, AV_LOG_DEBUG, "Creating stream...\n");
+
+    if ((ret = ff_rtmp_packet_create(&pkt, RTMP_SYSTEM_CHANNEL, RTMP_PT_INVOKE,
+                                     0, 25)) < 0)
+        return ret;
+
+    p = pkt.data;
+    ff_amf_write_string(&p, "createStream");
+    ff_amf_write_number(&p, ++rt->nb_invokes);
+    ff_amf_write_null(&p);
+
+    return rtmp_send_packet(rt, &pkt, 1);
+}
+
+// 中略
+
+if ((ret = ff_rtmp_packet_create(&spkt, RTMP_SYSTEM_CHANNEL,
+                                 RTMP_PT_INVOKE, 0,
+                                 RTMP_PKTDATA_DEFAULT_SIZE)) < 0) {
+    av_log(s, AV_LOG_ERROR, "Unable to create response packet\n");
+    return ret;
+}
+pp = spkt.data;
+ff_amf_write_string(&pp, "_result");
+ff_amf_write_number(&pp, seqnum);
+ff_amf_write_null(&pp);
+if (!strcmp(command, "createStream")) {
+    rt->nb_streamid++;
+    if (rt->nb_streamid == 0 || rt->nb_streamid == 2)
+        rt->nb_streamid++; /* Values 0 and 2 are reserved */
+    ff_amf_write_number(&pp, rt->nb_streamid);
+    /* By now we don't control which streams are removed in
+     * deleteStream. There is no stream creation control
+     * if a client creates more than 2^32 - 2 streams. */
+}
+```
+
+[obs-studio/rtmp.c#L1899-L1922](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1899-L1922)
+
+```c
+int
+RTMP_SendCreateStream(RTMP *r)
+{
+    RTMPPacket packet;
+    char pbuf[256], *pend = pbuf + sizeof(pbuf);
+    char *enc;
+
+    packet.m_nChannel = 0x03;	/* control channel (invoke) */
+    packet.m_headerType = RTMP_PACKET_SIZE_MEDIUM;
+    packet.m_packetType = RTMP_PACKET_TYPE_INVOKE;
+    packet.m_nTimeStamp = 0;
+    packet.m_nInfoField2 = 0;
+    packet.m_hasAbsTimestamp = 0;
+    packet.m_body = pbuf + RTMP_MAX_HEADER_SIZE;
+
+    enc = packet.m_body;
+    enc = AMF_EncodeString(enc, pend, &av_createStream);
+    enc = AMF_EncodeNumber(enc, pend, ++r->m_numInvokes);
+    *enc++ = AMF_NULL;		/* NULL */
+
+    packet.m_nBodySize = enc - packet.m_body;
+
+    return RTMP_SendPacket(r, &packet, TRUE);
+}
+```
+
+要求メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|createStream|
+|トランザクション ID|Number|4.<br>Invoke(FCPublish) に割り当てられた値より 1 多い値を割り振るようだ.|
+|Null|Null|AMF における Null.|
+
+応答メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|\_result<br>または<br>\_error|
+|トランザクション ID|Number|4.<br>Invoke(createStream) チャンクに入力されている値と同じ値を入力するようだ.|
+|Null|Null|AMF における Null.|
+|**メッセージストリーム ID**|Number|サーバ側がクライアント側に割り振るメッセージストリーム ID.|
+
+Invoke(releaseStream), Invoke(FCPublish) および Invoke(createStream) の 3 つのチャンクへの応答をすべて終えると, クライアント側はサーバ側に Invoke(publish) チャンクを送信する.
 
 ### パケットのメッセージフォーマット
 ## 映像/音声データに利用できるコーデック
