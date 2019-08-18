@@ -1484,7 +1484,7 @@ SendReleaseStream(RTMP *r, int streamIdx)
 |フィールド名|データ型|入力内容|
 |-|-|-|
 |コマンド名|String|releaseStream|
-|トランザクション ID|Number|2.<br>Invoke(connect) に割り振られたトランザクション ID より 1 多い値を割り振るようだ.|
+|トランザクション ID|Number|2.<br>Invoke(connect) に割り振られた値より 1 多い値を割り振るようだ.|
 |Null|Null|AMF における Null.<br>コマンドオブジェクトなどを入力しない場合はトランザクション ID の直後にこの値を 1 つ入力するようだ.|
 |**playpath**|String|mp4やmp3などのファイル名. mp4: などのプリフィックスを付けることができる.<br>起動時に渡される URL から参照する.<br>そのパターンは次の通りである: protocol://server[:port][/app][/playpath]|
 
@@ -1498,7 +1498,7 @@ SendReleaseStream(RTMP *r, int streamIdx)
 
 2. Invoke(FCPublish)
 
-Invoke(FCPublish) とその応答メッセージの構造は FFmpeg および OBS によると以下の構造であるようだ.
+Invoke(FCPublish) チャンクとその応答メッセージは FFmpeg および OBS によると以下の構造であるようだ.
 
 [FFmpeg/rtmpproto.c#L641-L663](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L641-L663)
 [FFmpeg/rtmpproto.c#L1956-L1965](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1956-L1965)
@@ -1580,7 +1580,7 @@ SendFCPublish(RTMP *r, int streamIdx)
 |-|-|-|
 |コマンド名|String|FCPublish|
 |トランザクション ID|Number|3.<br>Invoke(releaseStream) に割り振られた値より 1 多い値を割り振るようだ.|
-|Null|Null|AMF における Null.|
+|Null|Null|AMF における Null.<br>コマンドオブジェクトなどを入力しない場合はトランザクション ID の直後にこの値を 1 つ入力するようだ.|
 |playpath|String|Invoke(releaseStream) に入力されたものと同じ値を入力する.|
 
 応答メッセージ:
@@ -1591,7 +1591,7 @@ SendFCPublish(RTMP *r, int streamIdx)
 
 3. Invoke(createStream)
 
-Invoke(createStream) メッセージは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+Invoke(createStream) チャンクは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
 
 要求メッセージ:
 
@@ -1610,7 +1610,7 @@ Invoke(createStream) メッセージは[公式ドキュメント](http://wwwimag
 |コマンドオブジェクト|Object<br>または<br>Null|当該応答メッセージに設定する情報がある場合は Invoke(createStream) と同じフォーマットのコマンドオブジェクトを入力する.<br>そうでなければ AMF における Null を入力する.|
 |**メッセージストリーム ID**|Number|メッセージストリーム ID か**エラー情報が入力されたインフォメーションオブジェクト**を入力する.|
 
-他方で FFmpeg および OBS では以下の構造であるようだ.
+一方で, FFmpeg および OBS では以下の構造であるようだ.
 
 [FFmpeg/rtmpproto.c#L665-L687](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L665-L687)
 [FFmpeg/rtmpproto.c#L1981-L1999](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1981-L1999)
@@ -1697,7 +1697,7 @@ RTMP_SendCreateStream(RTMP *r)
 |フィールド名|データ型|入力内容|
 |-|-|-|
 |コマンド名|String|createStream|
-|トランザクション ID|Number|4.<br>Invoke(FCPublish) に割り当てられた値より 1 多い値を割り振るようだ.|
+|トランザクション ID|Number|4.<br>Invoke(FCPublish) に割り振られた値より 1 多い値を割り振るようだ.|
 |Null|Null|AMF における Null.|
 
 応答メッセージ:
@@ -1710,6 +1710,208 @@ RTMP_SendCreateStream(RTMP *r)
 |**メッセージストリーム ID**|Number|サーバ側がクライアント側に割り振るメッセージストリーム ID.|
 
 Invoke(releaseStream), Invoke(FCPublish) および Invoke(createStream) の 3 つのチャンクへの応答をすべて終えると, クライアント側はサーバ側に Invoke(publish) チャンクを送信する.
+
+#### Invoke(publish)
+
+Invoke(publish) チャンクは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+
+要求メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|publsh|
+|トランザクション ID|Number|0|
+|コマンドオブジェクト|Null|publish コマンドにコマンドオブジェクトは存在しないので AMF における Null を入力する.|
+|発行名|String|ストリームの発行に使用される名前.|
+|発行の種類|String|live, record, append のいずれか.  \
+|||* record: ストリームが発行され, データが新しいファイルに記録される. ファイルはサーバーアプリケーションを含むディレクトリ内のサブディレクトリのサーバーに保存される. ファイルが既に存在する場合, 上書きされる.  \
+|||* append: ストリームが発行され、データがファイルに追加される. ファイルが見つからなかった場合, 作成される.  \
+|||* live: ライブデータはファイルに記録せずに発行される.|
+
+応答メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|onStatus|
+|トランザクション ID|Number|0|
+|コマンドオブジェクト|Null|onStatusメッセージにコマンドオブジェクトは存在しないので AMF における Null を入力する.|
+|インフォメーションオブジェクト|Object|少なくとも以下の 3 つのプロパティを持つオブジェクト:  \
+|||* level: warning, status, error のいずれか.  \
+|||* code: メッセージのステータスコード. 例えば NetStream.Play.Start.  \
+|||* description: メッセージの人間が読める記述.  \
+|||  \
+|||インフォメーションオブジェクトは code に応じて他のプロパティを含め**てもよい**.|
+
+一方で, FFmpeg および OBS では以下の構造であるようだ.
+
+[FFmpeg/rtmpproto.c#L838-L863](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L838-L863)
+[FFmpeg/rtmpproto.c#L1858-L1899](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1858-L1899)
+
+```c
+/**
+ * Generate 'publish' call and send it to the server.
+ */
+static int gen_publish(URLContext *s, RTMPContext *rt)
+{
+    RTMPPacket pkt;
+    uint8_t *p;
+    int ret;
+
+    av_log(s, AV_LOG_DEBUG, "Sending publish command for '%s'\n", rt->playpath);
+
+    if ((ret = ff_rtmp_packet_create(&pkt, RTMP_SOURCE_CHANNEL, RTMP_PT_INVOKE,
+                                     0, 30 + strlen(rt->playpath))) < 0)
+        return ret;
+
+    pkt.extra = rt->stream_id;
+
+    p = pkt.data;
+    ff_amf_write_string(&p, "publish");
+    ff_amf_write_number(&p, ++rt->nb_invokes);
+    ff_amf_write_null(&p);
+    ff_amf_write_string(&p, rt->playpath);
+    ff_amf_write_string(&p, "live");
+
+    return rtmp_send_packet(rt, &pkt, 1);
+}
+
+static int write_status(URLContext *s, RTMPPacket *pkt,
+                        const char *status, const char *filename)
+{
+    RTMPContext *rt = s->priv_data;
+    RTMPPacket spkt = { 0 };
+    char statusmsg[128];
+    uint8_t *pp;
+    int ret;
+
+    if ((ret = ff_rtmp_packet_create(&spkt, RTMP_SYSTEM_CHANNEL,
+                                     RTMP_PT_INVOKE, 0,
+                                     RTMP_PKTDATA_DEFAULT_SIZE)) < 0) {
+        av_log(s, AV_LOG_ERROR, "Unable to create response packet\n");
+        return ret;
+    }
+
+    pp = spkt.data;
+    spkt.extra = pkt->extra;
+    ff_amf_write_string(&pp, "onStatus");
+    ff_amf_write_number(&pp, 0);
+    ff_amf_write_null(&pp);
+
+    ff_amf_write_object_start(&pp);
+    ff_amf_write_field_name(&pp, "level");
+    ff_amf_write_string(&pp, "status");
+    ff_amf_write_field_name(&pp, "code");
+    ff_amf_write_string(&pp, status);
+    ff_amf_write_field_name(&pp, "description");
+    snprintf(statusmsg, sizeof(statusmsg),
+             "%s is now published", filename);
+    ff_amf_write_string(&pp, statusmsg);
+    ff_amf_write_field_name(&pp, "details");
+    ff_amf_write_string(&pp, filename);
+    ff_amf_write_object_end(&pp);
+
+    spkt.size = pp - spkt.data;
+    ret = ff_rtmp_packet_write(rt->stream, &spkt, rt->out_chunk_size,
+                               &rt->prev_pkt[1], &rt->nb_prev_pkt[1]);
+    ff_rtmp_packet_destroy(&spkt);
+
+    return ret;
+}
+```
+
+[obs-studio/rtmp.c#L2081-L2112](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L2081-L2112)
+
+```c
+static int
+SendPublish(RTMP *r, int streamIdx)
+{
+    RTMPPacket packet;
+    char pbuf[1024], *pend = pbuf + sizeof(pbuf);
+    char *enc;
+
+    packet.m_nChannel = 0x04;	/* source channel (invoke) */
+    packet.m_headerType = RTMP_PACKET_SIZE_LARGE;
+    packet.m_packetType = RTMP_PACKET_TYPE_INVOKE;
+    packet.m_nTimeStamp = 0;
+    packet.m_nInfoField2 = r->Link.streams[streamIdx].id;
+    packet.m_hasAbsTimestamp = 0;
+    packet.m_body = pbuf + RTMP_MAX_HEADER_SIZE;
+
+    enc = packet.m_body;
+    enc = AMF_EncodeString(enc, pend, &av_publish);
+    enc = AMF_EncodeNumber(enc, pend, ++r->m_numInvokes);
+    *enc++ = AMF_NULL;
+    enc = AMF_EncodeString(enc, pend, &r->Link.streams[streamIdx].playpath);
+    if (!enc)
+        return FALSE;
+
+    /* FIXME: should we choose live based on Link.lFlags & RTMP_LF_LIVE? */
+    enc = AMF_EncodeString(enc, pend, &av_live);
+    if (!enc)
+        return FALSE;
+
+    packet.m_nBodySize = enc - packet.m_body;
+
+    return RTMP_SendPacket(r, &packet, TRUE);
+}
+```
+
+要求メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|publish|
+|トランザクション ID|Number|5.<br>Invoke(createStream) に割り振られた値より 1 多い値を割り振る|
+|コマンドオブジェクト|Null|AMF における Null が入力されている.|
+|発行名|String|playpath と同じ値が入力されている.|
+|発行の種類|String|live|
+
+応答メッセージ:
+
+|フィールド名|データ型|入力内容|
+|-|-|-|
+|コマンド名|String|onStatus|
+|トランザクション ID|Number|0|
+|コマンドオブジェクト|Null|AMF における Null が入力されている.|
+|インフォメーションオブジェクト|Object|以下の名前と値のペアが入力されている.  \
+|||* level: status  \
+|||* code: 何らかのステータスコード. [FFmpeg/rtmpproto.c#L1965-L1972](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1965-L1972) より, 今回は NetStream.Publish.Start が入力されているようだ.  \
+|||* description: "**playpath** is now published".  \
+|||* details: playpath と同じ値が入力されている.|
+
+Invoke(publish) チャンクの現在の仕様は, 要求メッセージのトランザクション ID が 0 でないことを除き RTMP 1.0 当時と同じようだ.
+
+上記の仕様に従い, クライアント/サーバ側は当該要求/応答チャンクを送信する. その手順は[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+
+<div id="rtmp-invoke-publish-sequences-official"></div>
+
+1. クライアント側はサーバ側に Invoke(publish) チャンクを送信する.
+2. サーバ側はクライアント側に User Control(Stream Begin) チャンクを送信する.
+3. クライアント側はサーバ側に Metadata チャンク, Audio/Video チャンクおよび Chunk Size チャンクを送信する.
+4. サーバ側はクライアント側に Invoke(onStatus) チャンクを送信する.
+
+一方で, FFmpeg では以下の実装を行っている.
+
+[FFmpeg/rtmpproto.c#L1965-L1973](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1965-L1973)
+
+```c
+if (!strcmp(command, "publish")) {
+    ret = write_begin(s);
+    if (ret < 0)
+        return ret;
+
+    // Send onStatus(NetStream.Publish.Start)
+    return write_status(s, pkt, "NetStream.Publish.Start",
+                       filename);
+}
+```
+
+<div id="rtmp-invoke-publish-sequences-ffmpeg"></div>
+
+1. クライアント側はサーバ側に Invoke(publish) チャンクを送信する.
+2. サーバ側はクライアント側に User Control(Stream Begin) チャンクと Invoke(onStatus) チャンクを送信する.
+
+RTMP 1.0 当時に対してかなり手順が少なくなっていることを確認できる. 上記の手順に従い Invoke(onStatus) チャンクの送信を終えると, クライアント側はサーバ側に Metadata チャンクを含めた Audio/Video チャンクの送信を開始する.
 
 ### パケットのメッセージフォーマット
 ## 映像/音声データに利用できるコーデック
