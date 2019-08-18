@@ -543,6 +543,8 @@ RTMP 層におけるハンドシェイクが完了したなら, サーバ側と�
 
 #### メッセージチャンクの構造
 
+ハンドシェイク後に送受信されるチャンクは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+
 1. チャンクベーシックヘッダ (最大 3 bytes)
 
 * チャンクメッセージヘッダのフォーマット (2 **bits**)
@@ -1061,7 +1063,7 @@ OBS:
 
 #### Invoke(connect)
 
-Invoke(connect) およびその応答メッセージの仕様は以下の通りである.
+Invoke(connect) およびその応答メッセージは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
 
 要求メッセージ:
 
