@@ -1885,9 +1885,9 @@ SendPublish(RTMP *r, int streamIdx)
 |フィールド名|データ型|入力内容|
 |-|-|-|
 |コマンド名|String|publish|
-|トランザクション ID|Number|5.<br>Invoke(createStream) に割り振られた値より 1 多い値を割り振る|
-|コマンドオブジェクト|Null|AMF における Null が入力されている.|
-|発行名|String|playpath と同じ値が入力されている.|
+|トランザクション ID|Number|5.<br>Invoke(createStream) に割り振られた値より 1 多い値を割り振るようだ.|
+|コマンドオブジェクト|Null|AMF における Null.|
+|発行名|String|playpath と同じ値.|
 |発行の種類|String|live|
 
 応答メッセージ:
@@ -1896,12 +1896,12 @@ SendPublish(RTMP *r, int streamIdx)
 |-|-|-|
 |コマンド名|String|onStatus|
 |トランザクション ID|Number|0|
-|コマンドオブジェクト|Null|AMF における Null が入力されている.|
-|インフォメーションオブジェクト|Object|以下の名前と値のペアが入力されている.  \
+|コマンドオブジェクト|Null|AMF における Null.|
+|インフォメーションオブジェクト|Object|以下の名前と値のペア.  \
 |||* level: status  \
-|||* code: 何らかのステータスコード. [FFmpeg/rtmpproto.c#L1965-L1972](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1965-L1972) より, 今回は NetStream.Publish.Start が入力されているようだ.  \
+|||* code: 何らかのステータスコード. [FFmpeg/rtmpproto.c#L1965-L1972](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1965-L1972) より, 今回は NetStream.Publish.Start が入力されている.  \
 |||* description: "**playpath** is now published".  \
-|||* details: playpath と同じ値が入力されている.|
+|||* details: playpath と同じ値.|
 
 Invoke(publish) チャンクの現在の仕様は, 要求メッセージのトランザクション ID が 0 でないことを除き RTMP 1.0 当時と同じようだ.
 
