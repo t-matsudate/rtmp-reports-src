@@ -1224,7 +1224,7 @@ if (ret < 0)
 |description|String|Connection succeeded.|
 |objectEncoding|Number|0|
 
-上記の仕様に従いクライアント側からの要求メッセージに対して応答メッセージを単に返せばいいわけではなく, その前後で複数のメッセージをクライアント側に順に送信しておく必要がある. [公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+そして, 当該チャンクの送受信の手順は[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
 
 <div id="rtmp-invoke-connect-sequences-official"></div>
 
