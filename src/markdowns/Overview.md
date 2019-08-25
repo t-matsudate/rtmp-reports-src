@@ -1968,6 +1968,46 @@ RTMP 1.0 当時に対してかなり手順が少なくなっていることを�
 3. 映像/音声データの送受信を行う.
 
 ### パケットのメッセージフォーマット
+
+Invoke, Metadata および Shared Object の 3 種のチャンクデータには, AMF0 もしくは AMF3 のメッセージフォーマットが適用されている. それらの内訳は AMF のドキュメントでは以下のように定義されている.
+
+* [AMF0](https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf0-file-format-specification.pdf)
+
+|ID|データ型|サイズ|入力内容|
+|-|-|-|-|
+|0|Number|8 bytes|8 bytes 浮動小数点数のバイナリ表記.<br>受信時は 8 bytes のバイト列なので, それを浮動小数点数に変換する工夫が必要である.|
+|1|Boolean|1 byte|1 byte 整数.<br>0 を false, それ以外(一般的には 1)を true として扱う.|
+|2|String|2 bytes<br>+<br>可変(最大 65535 bytes)|UTF-8 の文字列.<br>最初の 2 bytes には続く文字列の長さを入力する.|
+|3|Anonymous Object|可変|名前と値(どちらも AMF0 でエンコードされたもの)のペア.|
+|4|Movieclip| |サポートされておらず未来の使用のために予約されている.|
+|5|Null|0 bytes|なし.<br>AMF のデータ型の ID だけが入力される.|
+|6|Undefined|0 bytes|なし.<br>AMF のデータ型の ID だけが入力される.|
+|7|Reference|2 bytes|符号なし整数.<br>以下の 4 つのデータ型は複合することができる.  \
+|||| * Anonymous Object  \
+|||| * Typed Object  \
+|||| * Strict Array \
+|||| * ECMA Array  \
+||||  \
+||||複合オブジェクトの同じ実体が 1 つのオブジェクトグラフとして複数回現れるなら, それは参照として送られなければならない.<br>Reference 型は直列化されたオブジェクトのテーブル内でのインデックスを指す 2 bytes の符号なし整数である.<br>0 オリジンである.|
+|8|ECMA Array|4 bytes<br>+<br>可変(最大 2^31 要素)|要素の総数(4 bytes)とその数と等しい数の名前と値(どちらも AMF0 でエンコードされたもの)のペア.<br>ECMA 配列もしくは連想配列である.<br>順序やすべてのインデックスはすべて文字列のキーとして扱われる.<br>シリアライズの観点で当該データ型は Anonymous Object 型と類似している.|
+|9|Object End|0 byte|なし.<br>以下の 4 つのデータ型はそれ自体の終わりの印として当該データ型の ID をその末尾に入力する.  \
+|||| * Anonymous Object  \
+|||| * Typed Object  \
+|||| * ECMA Array  \
+|||| * Strict Array  \
+||||  \
+||||ただし, 当該データ型は **ID の直前の 2 bytes に空白(0x0000)が存在しており, 3 bytes の ID として評価しないと Number 型と混同してしまう**ので注意が必要である.|
+|10|Strict Array|4 bytes<br>+<br>可変(最大 2^31 要素)|要素の総数(4 bytes)とその数と等しい数の(AMF0 でエンコードされた)値.<br>当該データ型は順序インデックスを持つ厳密な配列として扱う.|
+|11|Date|2 bytes<br>+<br>8 bytes|8 bytes 浮動小数点数のバイナリ表記.<br>UTC 基準のタイムスタンプを浮動小数点数として入力する.<br>最初の 2 bytes はタイムゾーンであるが, 予約済でありサポートされていないため 0 で埋めるべきである.|
+|12|Long String|4 bytes<br>+<br>可変(最大 2^31 bytes)|UTF-8 の文字列.<br>最初の 4 bytes には続く文字列の長さを入力する.|
+|13|Unsupported|0 byte|なし.<br>直列化できないデータ型に対して, 当該データ型の ID をそのデータ型の場所で使うことができる.|
+|14|RecordSet| |サポートされておらず未来の使用のために予約されている.|
+|15|XML|4 bytes<br>+<br>可変(最大 2^31 bytes)|UTF-8 の文字列.<br>ActionScript 1.0, 2.0 での XMLDocument および ActionScript 3.0 での flash.xml.XMLDocument が XML ドキュメントの DOM 表現を提供する.<br>ただし, 直列化ではドキュメントの文字列表現が使用される.|
+|16|Typed Object|可変|オブジェクトの名前(AMF0 での String)と名前と値(どちらも AMF0 でエンコードされたもの)のペア.|
+|17|AVM+|可変|**AMF3** の値.<br>AMF0 のフォーマットの中で AMF3 のデータを扱う時に入力する.|
+
+* [AMF3](https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf-file-format-spec.pdf)
+
 ## 映像/音声データに利用できるコーデック
 ### 音声コーデック
 ### 映像コーデック
