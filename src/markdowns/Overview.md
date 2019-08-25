@@ -696,11 +696,11 @@ Type 3 (0 byte):
 |-|-|-|-|
 |26|SWF Verification Request|0 byte|相手側に SWF の内容が正しいことを確かめてもらうためのリクエスト.|
 |27|SWF Verification Response|42 bytes|相手側から返される SWF のバイト列から生成された HMAC-SHA256 ハッシュ.<br>メッセージの内訳は以下の通りである:  \
-||||* 0 byte目: 1  \
-||||* 1 byte目: 1  \
-||||* 2 - 5 bytes目: 解凍された SWF のサイズ  \
-||||* 6 - 9 bytes目: 同上  \
-||||* 10 - 31 bytes目: 解凍された SWF のハッシュをハンドシェイクチャンクのダイジェストで署名したバイト列|
+|||| * 0 byte目: 1  \
+|||| * 1 byte目: 1  \
+|||| * 2 - 5 bytes目: 解凍された SWF のサイズ  \
+|||| * 6 - 9 bytes目: 同上  \
+|||| * 10 - 31 bytes目: 解凍された SWF のハッシュをハンドシェイクチャンクのダイジェストで署名したバイト列|
 
 以下は公式ドキュメントには記載されておらず, Red5 と OBS の実装で見られるイベントである.
 
@@ -1748,9 +1748,9 @@ Invoke(publish) チャンクは[公式ドキュメント](http://wwwimages.adobe
 |コマンドオブジェクト|Null|publish コマンドにコマンドオブジェクトは存在しないので AMF における Null を入力する.|
 |発行名|String|ストリームの発行に使用される名前.|
 |発行の種類|String|live, record, append のいずれか.  \
-|||* record: ストリームが発行され, データが新しいファイルに記録される. ファイルはサーバーアプリケーションを含むディレクトリ内のサブディレクトリのサーバーに保存される. ファイルが既に存在する場合, 上書きされる.  \
-|||* append: ストリームが発行され、データがファイルに追加される. ファイルが見つからなかった場合, 作成される.  \
-|||* live: ライブデータはファイルに記録せずに発行される.|
+||| * record: ストリームが発行され, データが新しいファイルに記録される. ファイルはサーバーアプリケーションを含むディレクトリ内のサブディレクトリのサーバーに保存される. ファイルが既に存在する場合, 上書きされる.  \
+||| * append: ストリームが発行され、データがファイルに追加される. ファイルが見つからなかった場合, 作成される.  \
+||| * live: ライブデータはファイルに記録せずに発行される.|
 
 応答メッセージ:
 
@@ -1760,9 +1760,9 @@ Invoke(publish) チャンクは[公式ドキュメント](http://wwwimages.adobe
 |トランザクション ID|Number|0|
 |コマンドオブジェクト|Null|onStatusメッセージにコマンドオブジェクトは存在しないので AMF における Null を入力する.|
 |インフォメーションオブジェクト|Object|少なくとも以下の 3 つのプロパティを持つオブジェクト:  \
-|||* level: warning, status, error のいずれか.  \
-|||* code: メッセージのステータスコード. 例えば NetStream.Play.Start.  \
-|||* description: メッセージの人間が読める記述.  \
+||| * level: warning, status, error のいずれか.  \
+||| * code: メッセージのステータスコード. 例えば NetStream.Play.Start.  \
+||| * description: メッセージの人間が読める記述.  \
 |||  \
 |||インフォメーションオブジェクトは code に応じて他のプロパティを含め**てもよい**.|
 
@@ -1898,10 +1898,10 @@ SendPublish(RTMP *r, int streamIdx)
 |トランザクション ID|Number|0|
 |コマンドオブジェクト|Null|AMF における Null.|
 |インフォメーションオブジェクト|Object|以下の名前と値のペア.  \
-|||* level: status  \
-|||* code: 何らかのステータスコード. [FFmpeg/rtmpproto.c#L1965-L1972](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1965-L1972) より, 今回は NetStream.Publish.Start が入力されている.  \
-|||* description: "**playpath** is now published".  \
-|||* details: playpath と同じ値.|
+||| * level: status  \
+||| * code: 何らかのステータスコード. [FFmpeg/rtmpproto.c#L1965-L1972](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1965-L1972) より, 今回は NetStream.Publish.Start が入力されている.  \
+||| * description: "**playpath** is now published".  \
+||| * details: playpath と同じ値.|
 
 Invoke(publish) チャンクの現在の仕様は, 要求メッセージのトランザクション ID が 0 でないことを除き RTMP 1.0 当時と同じようだ.
 
