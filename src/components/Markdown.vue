@@ -125,6 +125,10 @@ export default {
             font-style: italic;
           }
 
+          .footnotes {
+            word-break: break-word;
+          }
+
           .hljs {
             /* 4K */
             @media (orientation: landscape) and (max-width: 3840px) {

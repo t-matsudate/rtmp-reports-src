@@ -58,7 +58,7 @@ Java 言語で実装されたマルチメディアサーバである. RTMP を�
 
 ### RTMP ハンドシェイク
 
-RTMP ハンドシェイクの手順は[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+RTMP ハンドシェイクの手順は公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 <div id="rtmp-handshake-sequences-official"></div>
 
@@ -98,7 +98,7 @@ RTMP ハンドシェイクの手順は[公式ドキュメント](http://wwwimage
 
 クライアント側とサーバ側はメッセージを交換する.
 
-各種チャンクのフィールドは, [公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+各種チャンクのフィールドは, 公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 #### C0 チャンクおよび S0 チャンク
 
@@ -131,7 +131,7 @@ RTMP ハンドシェイクの手順は[公式ドキュメント](http://wwwimage
 
 以下に各 OSS の該当部分の実装を示す.
 
-[FFmpeg/rtmpproto.c#L1200-L1236](https://github.com/FFmpeg/FFmpeg/blob/n4.1.4/libavformat/rtmpproto.c#L1200-L1236)
+FFmpeg/rtmpproto.c#L1200-L1236[^FFmpeg/rtmpproto.c#L1200-L1236]
 
 ```c
 uint8_t tosend [RTMP_HANDSHAKE_PACKET_SIZE+1] = {
@@ -162,13 +162,13 @@ if (CONFIG_FFRTMPCRYPT_PROTOCOL && rt->encrypted) {
 }
 ```
 
-[obs-studio/rtmp.c#L4062](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4062)
+obs-studio/rtmp.c#L4062[^obs-studio/rtmp.c#L4062]
 
 ```c
 clientbuf[0] = 0x03;		/* not encrypted */
 ```
 
-[obs-studio/handshake.h#L831-L837](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L831-L837)
+obs-studio/handshake.h#L831-L837[^obs-studio/handshake.h#L831-L837]
 
 ```c
 if (encrypted)
@@ -180,7 +180,7 @@ else
     clientsig[-1] = 0x03;
 ```
 
-[red5-server-common/RTMPHandshake.java#L67](https://github.com/Red5/red5-server-common/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/RTMPHandshake.java#L67)
+red5-server-common/RTMPHandshake.java#L67[^red5-server-common/RTMPHandshake.java#L67]
 
 ```java
 public final static String[] HANDSHAKE_TYPES = {"Undefined0", "Undefined1", "Undefined2", "RTMP", "Undefined4", "Undefined5", "RTMPE", "Undefined7", "RTMPE XTEA", "RTMPE BLOWFISH"};
@@ -208,7 +208,7 @@ public final static String[] HANDSHAKE_TYPES = {"Undefined0", "Undefined1", "Und
 
 C1 チャンクの場合:
 
-[FFmpeg/rtmpproto.c#L1200-L1207](https://github.com/FFmpeg/FFmpeg/blob/n4.1.4/libavformat/rtmpproto.c#L1200-L1207)
+FFmpeg/rtmpproto.c#L1200-L1207[^FFmpeg/rtmpproto.c#L1200-L1207]
 
 ```c
 uint8_t tosend    [RTMP_HANDSHAKE_PACKET_SIZE+1] = {
@@ -221,7 +221,7 @@ uint8_t tosend    [RTMP_HANDSHAKE_PACKET_SIZE+1] = {
 };
 ```
 
-[FFmpeg/rtmp.h#L32-L41](https://github.com/FFmpeg/FFmpeg/blob/n4.1.4/libavformat/rtmp.h#L32-L41)
+FFmpeg/rtmp.h#L32-L41[^FFmpeg/rtmp.h#L32-L41]
 
 ```c
 /**
@@ -236,7 +236,7 @@ uint8_t tosend    [RTMP_HANDSHAKE_PACKET_SIZE+1] = {
 /** @} */ //version defines
 ```
 
-[obs-studio/handshake.h#L842-L865](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L842-L865)
+obs-studio/handshake.h#L842-L865[^obs-studio/handshake.h#L842-L865]
 
 ```c
 if (FP9HandShake)
@@ -267,7 +267,7 @@ else
 
 S1 チャンクの場合:
 
-[red5-server/InboundHandshake.java#L348-L352](https://github.com/Red5/red5-server/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L348-L352)
+red5-server/InboundHandshake.java#L348-L352[^red5-server/InboundHandshake.java#L348-L352]
 
 ```java
 // version 4
@@ -350,7 +350,7 @@ $\displaystyle\sum_{i=764}^4 R_{i}\mod 728 + 776$
 
 クライアント側の場合:
 
-[FFmpeg/rtmpproto.c#L1248-L1258](https://github.com/FFmpeg/FFmpeg/blob/n4.1.4/libavformat/rtmpproto.c#L1248-L1258)
+FFmpeg/rtmpproto.c#L1248-L1258[^FFmpeg/rtmpproto.c#L1248-L1258]
 
 ```c
 if ((ret = ffurl_read_complete(rt->stream, serverdata,
@@ -366,7 +366,7 @@ if ((ret = ffurl_read_complete(rt->stream, clientdata,
 }
 ```
 
-[obs-studio/rtmp.c#L4089-L4112](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4089-L4112)
+obs-studio/rtmp.c#L4089-L4112[^obs-studio/rtmp.c#L4089-L4112]
 
 ```c
 if (ReadN(r, serversig, RTMP_SIG_SIZE) != RTMP_SIG_SIZE)
@@ -395,7 +395,9 @@ if (!bMatch)
 }
 ```
 
-[obs-studio/handshake.h#L936](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L936)
+obs-studio/handshake.h#L936-L945[^obs-studio/handshake.h#L936-L945]
+obs-studio/handshake.h#L1078-L1083[^obs-studio/handshake.h#L1078-L1083]
+obs-studio/handshake.h#L1170-L1174[^obs-studio/handshake.h#L1170-L1174]
 
 ```c
 if (ReadN(r, (char *)serversig, RTMP_SIG_SIZE) != RTMP_SIG_SIZE)
@@ -429,7 +431,7 @@ if (memcmp(serversig, clientsig, RTMP_SIG_SIZE) != 0)
 
 サーバ側の場合:
 
-[FFmpeg/rtmpproto.c#L1452-L1472](https://github.com/FFmpeg/FFmpeg/blob/n4.1.4/libavformat/rtmpproto.c#L1452-L1472)
+FFmpeg/rtmpproto.c#L1452-L1472[^FFmpeg/rtmpproto.c#L1452-L1472]
 
 ```c
 /* Send S1 */
@@ -455,7 +457,7 @@ if (ret) {
 }
 ```
 
-[obs-studio/rtmp.c#L4152-L4178](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4152-L4178)
+obs-studio/rtmp.c#L4152-L4178[^obs-studio/rtmp.c#L4152-L4178]
 
 ```c
 if (!WriteN(r, serverbuf, RTMP_SIG_SIZE + 1))
@@ -487,8 +489,8 @@ if (!bMatch)
 }
 ```
 
-[obs-studio/hansdhake.h#L1442-L1447](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1442-L1447)
-[obs-studio/handshake.h#L1524-L1528](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1524-L1528)
+obs-studio/hansdhake.h#L1442-L1447[^obs-studio/handshake.h#L1442-L1447]
+obs-studio/handshake.h#L1524-L1528[^obs-studio/handshake.h#L1524-L1528]
 
 ```c
 if (!WriteN(r, (char *)clientsig, RTMP_SIG_SIZE))
@@ -507,8 +509,8 @@ if (memcmp(serversig, clientsig, RTMP_SIG_SIZE) != 0)
 }
 ```
 
-[red5-server/InboundHandshake.java#L213-L224](https://github.com/Red5/red5-server/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L213-L224)
-[red5-server/InboundHandshake.java#L304-L306](https://github.com/Red5/red5-server/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L304-L306)
+red5-server/InboundHandshake.java#L213-L224[^red5-server/InboundHandshake.java#L213-L224]
+red5-server/InboundHandshake.java#L304-L306[^red5-server/InboundHandshake.java#L304-L306]
 
 ```java
 IoBuffer s0s1s2 = IoBuffer.allocate(Constants.HANDSHAKE_SIZE * 2 + 1); // 3073
@@ -565,7 +567,7 @@ RTMP 層におけるハンドシェイクが完了したなら, サーバ側と�
 
 #### メッセージチャンクの構造
 
-ハンドシェイク後に送受信されるチャンクは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+ハンドシェイク後に送受信されるチャンクは公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 1. チャンクベーシックヘッダ (最大 3 bytes)
 
@@ -711,7 +713,7 @@ Type 3 (0 byte):
 
 ##### Metadata の構造
 
-Metadata は[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+Metadata は公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 > An aggregate message is a single message that contains a series of RTMP sub-messages.
 
@@ -725,7 +727,7 @@ Metadata は[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Ad
 
 一方で, 各種 OSS 製品では以下のようにデコードしている.
 
-[FFmpeg/rtmpproto.c#L2347-L2395](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L2347-L2395)
+FFmpeg/rtmpproto.c#L2347-L2395[^FFmpeg/rtmpproto.c#L2347-L2395]
 
 ```c
 static int handle_metadata(RTMPContext *rt, RTMPPacket *pkt)
@@ -779,8 +781,8 @@ static int handle_metadata(RTMPContext *rt, RTMPPacket *pkt)
 }
 ```
 
-[obs-studio/rtmp.c#L1490-L1523](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1490-L1523)
-[obs-studio/rtmp.c#L4972-L5059](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4972-L5059)
+obs-studio/rtmp.c#L1490-L1523[^obs-studio/rtmp.c#L1490-L1523]
+obs-studio/rtmp.c#L4972-L5059[^obs-studio/rtmp.c#L4972-L5059]
 
 ```c
 case RTMP_PACKET_TYPE_FLASH_VIDEO:
@@ -910,7 +912,7 @@ stopKeyframeSearch:
 }
 ```
 
-[red5-server-common/Aggregate.java#L119-L209](https://github.com/Red5/red5-server-common/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/event/Aggregate.java#L119-L209)
+red5-server-common/Aggregate.java#L119-L209[^red5-server-common/Aggregate.java#L119-L209]
 
 ```java
 /**
@@ -1006,7 +1008,7 @@ public LinkedList<IRTMPEvent> getParts() {
 }
 ```
 
-上記の各実装において, `type/subType`, `size/dataSize` および `cts/nTimestamp/timestamp` として表れているフィールドは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)中の以下の部分で定義されている.
+上記の各実装において, `type/subType`, `size/dataSize` および `cts/nTimestamp/timestamp` として表れているフィールドは公式ドキュメント[^RTMP-Specification-1.0]中の以下の部分で定義されている.
 
 > 6.1.1.  Message Header
 >
@@ -1051,7 +1053,7 @@ public LinkedList<IRTMPEvent> getParts() {
 * チャンクメッセージヘッダのタイムスタンプに当該フィールドの値を加算することで実際のタイムスタンプを求めることができる.
 * 最初のサブメッセージのタイムスタンプはチャンクメッセージヘッダのそれと同一で**あるべき**なので, オフセットは 0 で**あるべき**である.
 
-そして, バックポインタについては[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+そして, バックポインタについては公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 > The back pointer contains the size of the previous message including its header.
 > It is included to match the format of FLV file and is used for backward seek.
@@ -1085,7 +1087,7 @@ OBS:
 
 #### Invoke(connect)
 
-Invoke(connect) およびその応答メッセージは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+Invoke(connect) およびその応答メッセージは公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 要求メッセージ:
 
@@ -1169,7 +1171,7 @@ Invoke(connect) およびその応答メッセージは[公式ドキュメント
 
 応答メッセージのプロパティフィールドおよびインフォメーションフィールドには公式に定められた仕様が存在しない. よって, 各種 OSS の実装内容から特定できる範囲で紹介する.
 
-[FFmpeg/rtmpproto.c#L542-L575](https://github.com/FFmpeg/FFmpeg/blob/n4.1.4/libavformat/rtmpproto.c#L542-L575)
+FFmpeg/rtmpproto.c#L542-L575[^FFmpeg/rtmpproto.c#L542-L575]
 
 ```c
 // Send _result NetConnection.Connect.Success to connect
@@ -1224,7 +1226,7 @@ if (ret < 0)
 |description|String|Connection succeeded.|
 |objectEncoding|Number|0|
 
-そして, 当該チャンクの送受信の手順は[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+そして, 当該チャンクの送受信の手順は公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 <div id="rtmp-invoke-connect-sequences-official"></div>
 
@@ -1246,7 +1248,7 @@ if (ret < 0)
 
 以下に FFmpeg が実際に送信しているメッセージを示す.
 
-[FFmpeg/rtmpproto.c#L485-L588](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L485-L588)
+FFmpeg/rtmpproto.c#L485-L588[^FFmpeg/rtmpproto.c#L485-L588]
 
 ```c
 // Send Window Acknowledgement Size (as defined in specification)
@@ -1381,7 +1383,7 @@ Invoke(onBWDone) を送信した段階で, FFmpeg が以下のメッセージと
 ここで N は Invoke(onBWDone) チャンクのメッセージ長を, M はその直前に送信した Invoke(\_result) チャンクのメッセージ長を指している. 上記のエラーメッセージから考えると, Invoke(\_result) チャンクの受信後にもう一度同じサイズのメッセージを要求している. つまり, 何故か Invoke(\_result) チャンクを**二度**送信しなければならない.  
 なお, 上記のエラーメッセージは当該製品中の以下の処理から発されている.
 
-[FFmpeg/rtmppkt.c#L238-L244](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmppkt.c#L238-L244)
+FFmpeg/rtmppkt.c#L238-L244[^FFmpeg/rtmppkt.c#L238-L244]
 
 ```c
 if (prev_pkt[channel_id].read && size != prev_pkt[channel_id].size) {
@@ -1395,7 +1397,7 @@ if (prev_pkt[channel_id].read && size != prev_pkt[channel_id].size) {
 
 上記の処理は当該製品中のソースコードにしか存在せず, 他方の RTMP クライアントソフトウェアである OBS のソースコード中には存在しないことを確認できる.
 
-[obs-studio/rtmp.c#L3857-L4049](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L3857-L4049)
+obs-studio/rtmp.c#L3857-L4049[^obs-studio/rtmp.c#L3857-L4049]
 
 よって, 私は Invoke(connect) の応答メッセージの送信手順を以下に変更して再送信を試みた.
 
@@ -1420,8 +1422,8 @@ Invoke(connect) での接続処理が終わった後に, 3 つに繋がった何
 
 Invoke(releaseStream) チャンクとその応答メッセージは FFmpeg および OBS によると以下の構造であるようだ.
 
-[FFmpeg/rtmpproto.c#L593-L615](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L593-L615)
-[FFmpeg/rtmpproto.c#L1981-L1999](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1981-L1999)
+FFmpeg/rtmpproto.c#L593-L615[^FFmpeg/rtmpproto.c#L593-L615]
+FFmpeg/rtmpproto.c#L1981-L1999[^FFmpeg/rtmpproto.c#L1981-L1999]
 
 ```c
 /**
@@ -1471,7 +1473,7 @@ if (!strcmp(command, "createStream")) {
 }
 ```
 
-[obs-studio/rtmp.c#L1990-L2016](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1990-L2016)
+obs-studio/rtmp.c#L1990-L2016[^obs-studio/rtmp.c#L1990-L2016]
 
 ```c
 static int
@@ -1524,8 +1526,8 @@ SendReleaseStream(RTMP *r, int streamIdx)
 
 Invoke(FCPublish) チャンクとその応答メッセージは FFmpeg および OBS によると以下の構造であるようだ.
 
-[FFmpeg/rtmpproto.c#L641-L663](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L641-L663)
-[FFmpeg/rtmpproto.c#L1956-L1965](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1956-L1965)
+FFmpeg/rtmpproto.c#L641-L663[^FFmpeg/rtmpproto.c#L641-L663]
+FFmpeg/rtmpproto.c#L1956-L1965[^FFmpeg/rtmpproto.c#L1956-L1965]
 
 ```c
 /**
@@ -1566,7 +1568,7 @@ if (!strcmp(command, "FCPublish")) {
 }
 ```
 
-[obs-studio/rtmp.c#L2020-L2046](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L2020-L2046)
+obs-studio/rtmp.c#L2020-L2046[^obs-studio/rtmp.c#L2020-L2046]
 
 ```c
 static int
@@ -1615,7 +1617,7 @@ SendFCPublish(RTMP *r, int streamIdx)
 
 3. Invoke(createStream)
 
-Invoke(createStream) チャンクは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+Invoke(createStream) チャンクは公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 要求メッセージ:
 
@@ -1636,8 +1638,8 @@ Invoke(createStream) チャンクは[公式ドキュメント](http://wwwimages.
 
 一方で, FFmpeg および OBS では以下の構造であるようだ.
 
-[FFmpeg/rtmpproto.c#L665-L687](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L665-L687)
-[FFmpeg/rtmpproto.c#L1981-L1999](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1981-L1999)
+FFmpeg/rtmpproto.c#L665-L687[^FFmpeg/rtmpproto.c#L665-L687]
+FFmpeg/rtmpproto.c#L1981-L1999[^FFmpeg/rtmpproto.c#L1981-L1999]
 
 ```c
 /**
@@ -1687,7 +1689,7 @@ if (!strcmp(command, "createStream")) {
 }
 ```
 
-[obs-studio/rtmp.c#L1899-L1922](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1899-L1922)
+obs-studio/rtmp.c#L1899-L1922[^obs-studio/rtmp.c#L1899-L1922]
 
 ```c
 int
@@ -1737,7 +1739,7 @@ Invoke(releaseStream), Invoke(FCPublish) および Invoke(createStream) の 3 �
 
 #### Invoke(publish)
 
-Invoke(publish) チャンクは[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+Invoke(publish) チャンクは公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 要求メッセージ:
 
@@ -1768,8 +1770,8 @@ Invoke(publish) チャンクは[公式ドキュメント](http://wwwimages.adobe
 
 一方で, FFmpeg および OBS では以下の構造であるようだ.
 
-[FFmpeg/rtmpproto.c#L838-L863](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L838-L863)
-[FFmpeg/rtmpproto.c#L1858-L1899](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1858-L1899)
+FFmpeg/rtmpproto.c#L838-L863[^FFmpeg/rtmpproto.c#L838-L863]
+FFmpeg/rtmpproto.c#L1858-L1899[^FFmpeg/rtmpproto.c#L1858-L1899]
 
 ```c
 /**
@@ -1843,7 +1845,7 @@ static int write_status(URLContext *s, RTMPPacket *pkt,
 }
 ```
 
-[obs-studio/rtmp.c#L2081-L2112](https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L2081-L2112)
+obs-studio/rtmp.c#L2081-L2112[^obs-studio/rtmp.c#L2081-L2112]
 
 ```c
 static int
@@ -1899,13 +1901,13 @@ SendPublish(RTMP *r, int streamIdx)
 |コマンドオブジェクト|Null|AMF における Null.|
 |インフォメーションオブジェクト|Object|以下の名前と値のペア.  \
 ||| * level: status  \
-||| * code: 何らかのステータスコード. [FFmpeg/rtmpproto.c#L1965-L1972](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1965-L1972) より, 今回は NetStream.Publish.Start が入力されている.  \
+||| * code: 何らかのステータスコード. FFmpeg/rtmpproto.c#L1965-L1973[^FFmpeg/rtmpproto.c#L1965-L1973] より, 今回は NetStream.Publish.Start が入力されている.  \
 ||| * description: "**playpath** is now published".  \
 ||| * details: playpath と同じ値.|
 
 Invoke(publish) チャンクの現在の仕様は, 要求メッセージのトランザクション ID が 0 でないことを除き RTMP 1.0 当時と同じようだ.
 
-上記の仕様に従い, クライアント/サーバ側は当該要求/応答チャンクを送信する. その手順は[公式ドキュメント](http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf)では以下のように定義されている.
+上記の仕様に従い, クライアント/サーバ側は当該要求/応答チャンクを送信する. その手順は公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 <div id="rtmp-invoke-publish-sequences-official"></div>
 
@@ -1916,7 +1918,7 @@ Invoke(publish) チャンクの現在の仕様は, 要求メッセージのト�
 
 一方で, FFmpeg では以下の実装を行っている.
 
-[FFmpeg/rtmpproto.c#L1965-L1973](https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1965-L1973)
+FFmpeg/rtmpproto.c#L1965-L1973[^FFmpeg/rtmpproto.c#L1965-L1973]
 
 ```c
 if (!strcmp(command, "publish")) {
@@ -1973,7 +1975,7 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 #### AMF0
 
-* [AMF0](https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf0-file-format-specification.pdf)
+* AMF0[^AMF0-File-Format-Specification]
 
 |ID|データ型|サイズ|入力内容|
 |-|-|-|-|
@@ -2010,7 +2012,7 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 #### AMF3
 
-* [AMF3](https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf-file-format-spec.pdf)
+* AMF3[^AMF-File-Format-Spec]
 
 |ID|データ型|サイズ|入力内容|
 |-|-|-|-|
@@ -2082,6 +2084,90 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 ### 音声コーデック
 ### 映像コーデック
 ## 参考文献
+
+[^RTMP-Specification-1.0]: Adobe Systems Inc., "RTMP Specification 1.0" http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
+
+[^FFmpeg/rtmpproto.c#L1200-L1236]: FFmpeg, "FFmpeg/rtmpproto.c#L1200-L1236", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1200-L1236
+
+[^obs-studio/rtmp.c#L4062]: obsproject, "obs-studio/rtmp.c#L4062", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4062
+
+[^obs-studio/handshake.h#L831-L837]: obsproject, "obs-studio/handshake.h#L831-L837", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L831-L837
+
+[^red5-server-common/RTMPHandshake.java#L67]: Red5, "red5-server-common/RTMPHandshake.java#L67", https://github.com/Red5/red5-server-common/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/RTMPHandshake.java#L67
+
+[^FFmpeg/rtmpproto.c#L1200-L1207]: FFmpeg, "FFmpeg/rtmpproto.c#L1200-L1207", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1200-L1207
+
+[^FFmpeg/rtmp.h#L32-L41]: FFmpeg, "FFmpeg/rtmp.h#L32-L41", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmp.h#L32-L41
+
+[^obs-studio/handshake.h#L842-L865]: obsproject, "obs-studio/handshake.h#L842-L865", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L842-L865
+
+[^red5-server/InboundHandshake.java#L348-L352]: Red5, "red5-server/InboundHandshake.java#L348-L352", https://github.com/Red5/red5-server/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L348-L352
+
+[^FFmpeg/rtmpproto.c#L1248-L1258]: FFmpeg, "FFmpeg/rtmpproto.c#L1248-L1258", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1248-L1258
+
+[^obs-studio/rtmp.c#L4089-L4112]: obsproject, "obs-studio/rtmp.c#L4089-L4112", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4089-L4112
+
+[^obs-studio/handshake.h#L936-L945]: obsproject, "obs-studio/handshake.h#L936-L945", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L936-L945
+
+[^obs-studio/handshake.h#L1078-L1083]: obsproject, "obs-studio/handshake.h#L1078-L1083", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1078-L1083
+
+[^obs-studio/handshake.h#L1170-L1174]: obsproject, "obs-studio/handshake.h#L1170-L1174", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1170-L10174
+
+[^FFmpeg/rtmpproto.c#L1452-L1472]: FFmpeg, "FFmpeg/rtmpproto.c#L1452-L1472", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1452-L1472
+
+[^obs-studio/rtmp.c#L4152-L4178]: obsproject, "obs-studio/rtmp.c#L4152-L4178", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4152-L4178
+
+[^obs-studio/handshake.h#L1442-L1447]: obsproject, "obs-studio/handshake.h#L1442-L1447", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1442-L1447
+
+[^obs-studio/handshake.h#L1524-L1528]: obsproject, "obs-studio/handshake.h#L1524-L1528", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1524-L1528
+
+[^red5-server/InboundHandshake.java#L213-L224]: Red5, "red5-server/InboundHandshake.java#L213-L224", https://github.com/Red5/red5-server/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L213-L224
+
+[^red5-server/InboundHandshake.java#L304-L306]: Red5, "red5-server/InboundHandshake.java#L304-L306", https://github.com/Red5/red5-server/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L304-L306
+
+[^FFmpeg/rtmpproto.c#L2347-L2395]: FFmpeg, "FFmpeg/rtmpproto.c#L2347-L2395", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L2347-L2395
+
+[^obs-studio/rtmp.c#L1490-L1523]: obsproject, "obs-studio/rtmp.c#L1490-L1523", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1490-L1523
+
+[^obs-studio/rtmp.c#L4972-L5059]: obsproject, "obs-studio/rtmp.c#L4972-L5059", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4972-L5059
+
+[^red5-server-common/Aggregate.java#L119-L209]: Red5, "red5-server-common/Aggregate.java#L119-L209", https://github.com/Red5/red5-server-common/blob/v1.1.1/src/main/java/org/red5/server/net/rtmp/event/Aggregate.java#L119-L209
+
+[^FFmpeg/rtmpproto.c#L542-L575]: FFmpeg, "FFmpeg/rtmpproto.c#L542-L575", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L542-L575
+
+[^FFmpeg/rtmpproto.c#L485-L588]: FFmpeg, "FFmpeg/rtmpproto.c#L485-L588", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L485-L588
+
+[^FFmpeg/rtmppkt.c#L238-L244]: FFmpeg, "FFmpeg/rtmppkt.c#L238-L244", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmppkt.c#L238-L244
+
+[^obs-studio/rtmp.c#L3857-L4049]: obsproject, "obs-studio/rtmp.c#L3857-L4049", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L3857-L4049
+
+[^FFmpeg/rtmpproto.c#L593-L615]: FFmpeg, "FFmpeg/rtmpproto.c#L593-L615", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L593-L615
+
+[^FFmpeg/rtmpproto.c#L1981-L1999]: FFmpeg, "FFmpeg/rtmpproto.c#L1981-L1999", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1981-L1999
+
+[^obs-studio/rtmp.c#L1990-L2016]: obsproject, "obs-studio/rtmp.c#L1990-L2016", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1990-L2016
+
+[^FFmpeg/rtmpproto.c#L641-L663]: FFmpeg, "FFmpeg/rtmpproto.c#L641-L663", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L641-L663
+
+[^FFmpeg/rtmpproto.c#L1956-L1965]: FFmpeg, "FFmpeg/rtmpproto.c#L1956-L1965", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1956-L1965
+
+[^obs-studio/rtmp.c#L2020-L2046]: obsproject, "obs-studio/rtmp.c#L2020-L2046", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L2020-L2046
+
+[^FFmpeg/rtmpproto.c#L665-L687]: FFmpeg, "FFmpeg/rtmpproto.c#L665-L687", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L665-L687
+
+[^obs-studio/rtmp.c#L1899-L1922]: obsproject, "obs-studio/rtmp.c#L1899-L1922", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1899-L1922
+
+[^FFmpeg/rtmpproto.c#L838-L863]: FFmpeg, "FFmpeg/rtmpproto.c#L838-L863", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L838-L863
+
+[^FFmpeg/rtmpproto.c#L1858-L1899]: FFmpeg, "FFmpeg/rtmpproto.c#L1858-L1899", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1858-L1899
+
+[^obs-studio/rtmp.c#L2081-L2112]: obsproject, "obs-studio/rtmp.c#L2081-L2112", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L2081-L2112
+
+[^FFmpeg/rtmpproto.c#L1965-L1973]: FFmpeg, "FFmpeg/rtmpproto.c#L1965-L1973", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1965-L1973
+
+[^AMF0-File-Format-Specification]: Adobe Systems Inc., "AMF0 File Format Specification", https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf0-file-format-specification.pdf
+
+[^AMF-File-Format-Spec]: Adobe Systems Inc., "AMF File Format Spec", https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf-file-format-spec.pdf
 
 *[OSS]: Open Source Software
 *[RTMP]: Real-Time Messaging Protocol
