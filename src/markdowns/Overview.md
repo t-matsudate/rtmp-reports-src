@@ -1981,7 +1981,7 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 |-|-|-|-|
 |0|Number|8 bytes|8 bytes 浮動小数点数のバイナリ表記.<br>受信時は 8 bytes のバイト列なので, それを浮動小数点数に変換する工夫が必要である.|
 |1|Boolean|1 byte|1 byte 整数.<br>0 を false, それ以外(一般的には 1)を true として扱う.|
-|2|String|2 bytes<br>+<br>可変(最大 (2^16 - 1) bytes)|UTF-8 の文字列.<br>最初の 2 bytes には続く文字列の長さを入力する.|
+|2|String|2 bytes<br>+<br>可変(最大 (2^16^ - 1) bytes)|UTF-8 の文字列.<br>最初の 2 bytes には続く文字列の長さを入力する.|
 |3|Anonymous Object|可変|名前と値(どちらも AMF0 でエンコードされたもの)のペア.|
 |4|Movieclip| |サポートされておらず未来の使用のために予約されている.|
 |5|Null|0 bytes|なし.<br>ID のみを入力する.|
@@ -1993,7 +1993,7 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 |||| * ECMA Array  \
 ||||  \
 ||||複合オブジェクトの同じ実体が 1 つのオブジェクトグラフとして複数回現れるなら, それは参照として送られなければならない.<br>Reference 型は直列化されたオブジェクトのテーブル内でのインデックスを指す 2 bytes の符号なし整数である.<br>0 オリジンである.|
-|8|ECMA Array|4 bytes<br>+<br>可変(最大 (2^32 - 1) 要素)|要素の総数(4 bytes)とその数と等しい数の名前と値(どちらも AMF0 でエンコードされたもの)のペア.<br>ECMA 配列もしくは連想配列である.<br>順序やすべてのインデックスはすべて文字列のキーとして扱われる.<br>シリアライズの観点で当該データ型は Anonymous Object 型と類似している.|
+|8|ECMA Array|4 bytes<br>+<br>可変(最大 (2^32^ - 1) 要素)|要素の総数(4 bytes)とその数と等しい数の名前と値(どちらも AMF0 でエンコードされたもの)のペア.<br>ECMA 配列もしくは連想配列である.<br>順序やすべてのインデックスはすべて文字列のキーとして扱われる.<br>シリアライズの観点で当該データ型は Anonymous Object 型と類似している.|
 |9|Object End|0 byte|なし.<br>ID のみを入力する.<br>以下の 4 つのデータ型はそれ自体の終わりの印として当該データ型の ID をその末尾に入力する.  \
 |||| * Anonymous Object  \
 |||| * Typed Object  \
@@ -2001,12 +2001,12 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 |||| * Strict Array  \
 ||||  \
 ||||ただし, 当該データ型は **ID の直前の 2 bytes に空白(0x0000)が存在しており, 3 bytes の ID として評価しないと Number 型と混同してしまう**ので注意が必要である.|
-|10|Strict Array|4 bytes<br>+<br>可変(最大 (2^32 - 1) 要素)|要素の総数(4 bytes)とその数と等しい数の(AMF0 でエンコードされた)値.<br>当該データ型は順序インデックスを持つ厳密な配列として扱う.|
+|10|Strict Array|4 bytes<br>+<br>可変(最大 (2^32^ - 1) 要素)|要素の総数(4 bytes)とその数と等しい数の(AMF0 でエンコードされた)値.<br>当該データ型は順序インデックスを持つ厳密な配列として扱う.|
 |11|Date|2 bytes<br>+<br>8 bytes|8 bytes 浮動小数点数のバイナリ表記.<br>UTC 基準のタイムスタンプを浮動小数点数として入力する.<br>最初の 2 bytes はタイムゾーンであるが, 予約済でありサポートされていないため 0 で埋めるべきである.|
-|12|Long String|4 bytes<br>+<br>可変(最大 (2^32 - 1) bytes)|UTF-8 の文字列.<br>最初の 4 bytes には続く文字列の長さを入力する.|
+|12|Long String|4 bytes<br>+<br>可変(最大 (2^32^ - 1) bytes)|UTF-8 の文字列.<br>最初の 4 bytes には続く文字列の長さを入力する.|
 |13|Unsupported|0 byte|なし.<br>ID のみを入力する.<br>直列化できないデータ型に対して, 当該データ型の ID をそのデータ型の場所で使うことができる.|
 |14|RecordSet| |サポートされておらず未来の使用のために予約されている.|
-|15|XML|4 bytes<br>+<br>可変(最大 (2^32 - 1) bytes)|UTF-8 の文字列.<br>ActionScript 1.0, 2.0 での XMLDocument および ActionScript 3.0 での flash.xml.XMLDocument が XML ドキュメントの DOM 表現を提供する.<br>ただし, 直列化ではドキュメントの文字列表現が使用される.|
+|15|XML|4 bytes<br>+<br>可変(最大 (2^32^ - 1) bytes)|UTF-8 の文字列.<br>ActionScript 1.0, 2.0 での XMLDocument および ActionScript 3.0 での flash.xml.XMLDocument が XML ドキュメントの DOM 表現を提供する.<br>ただし, 直列化ではドキュメントの文字列表現が使用される.|
 |16|Typed Object|可変|オブジェクトの名前(AMF0 での String)と名前と値(どちらも AMF0 でエンコードされたもの)のペア.|
 |17|AVM+|可変|**AMF3** の値.<br>AMF0 のフォーマットの中で AMF3 のデータを扱う時に入力する.|
 
@@ -2022,8 +2022,8 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 |3|True|0 byte|なし.<br>ID のみを入力する.<br>当該データ型は AMF3 における真偽値の**真**として扱う.|
 |4|Integer|29 **bits**|[29 bits](#integer-型%2C-長さ%2C-要素の総数) の整数.<br>28 bits の範囲を上回ったり下回ったりする場合は, AMF3 の Double 型を用いてシリアライズされる.|
 |5|Double|8 bytes|8 bytes の浮動小数点数.<br>エンコード/デコードの方法は AMF0 の Number 型と同じである.|
-|6|String|29 bits<br>+<br>可変(最大 (2^28 - 1) bytes)|UTF-8 の文字列.<br>最初の [29 bits](#integer-型%2C-長さ%2C-要素の総数) には参照値または文字列の長さを入力する.|
-|7|XMLDocument|29 bits<br>+<br>可変(最大 (2^28 - 1) bytes)|UTF-8 でエンコードされた XML の文字列表現.<br>ActionScript 3 では新しい XML 型があるが, 古い XMLDocument 型が flash.xml.XMLDocument として言語に残されている.|
+|6|String|29 bits<br>+<br>可変(最大 (2^28^ - 1) bytes)|UTF-8 の文字列.<br>最初の [29 bits](#integer-型%2C-長さ%2C-要素の総数) には参照値または文字列の長さを入力する.|
+|7|XMLDocument|29 bits<br>+<br>可変(最大 (2^28^ - 1) bytes)|UTF-8 でエンコードされた XML の文字列表現.<br>ActionScript 3 では新しい XML 型があるが, 古い XMLDocument 型が flash.xml.XMLDocument として言語に残されている.|
 |8|Date|29 bits<br>+<br>8 bytes|8 bytes の浮動小数点数のバイナリ表記.<br>UTC 基準のタイムスタンプを浮動小数点数として入力する.<br>最初の [29 bits](#integer-型%2C-長さ%2C-要素の総数) は AMF3 の Integer の値や String の長さと同じフォーマットであるが, 値(最下位ビットのフラグが 1)として入力する場合は残りの 28 bits には何も入力しない.|
 |9|Array|29 bits<br>+<br>可変|当該データ型には以下の 3 つのフォーマットがある.  \
 |||| * 参照であることを示す [29 bits](#integer-型%2C-長さ%2C-要素の総数) のフォーマット  \
@@ -2046,9 +2046,9 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 |||| * externalizable<br>**外部のプログラムが変換可能な**名前を持つオブジェクト.  \
 ||||  \
 ||||**Object 型としての**参照値もしくはトレイトのフォーマットの直後にメンバの実際の値が続き, 動的なメンバがあれば更にその直後にそれが続く形になる.|
-|11|XML|29 bits<br>+<br>可変(最大 (2^28 - 1) bytes)|UTF-8 でエンコードされた XML の文字列表現.|
-|12|ByteArray|29 bits<br>+<br>可変(最大 (2^28 - 1) bytes)|1 byte 符号なし整数の配列.|
-|13|Vector(Int)|29 bits<br>+<br>1 byte<br>+<br>可変(最大 (2^28 - 1) 要素)|4 byte **符号付き** 整数の配列.<br>[29 bits](#integer-型%2C-長さ%2C-要素の総数) の直後の 1 byte は 1 ならその配列が固定長であることを, 0 なら可変長であることを意味する.|
+|11|XML|29 bits<br>+<br>可変(最大 (2^28^ - 1) bytes)|UTF-8 でエンコードされた XML の文字列表現.|
+|12|ByteArray|29 bits<br>+<br>可変(最大 (2^28^ - 1) bytes)|1 byte 符号なし整数の配列.|
+|13|Vector(Int)|29 bits<br>+<br>1 byte<br>+<br>可変(最大 (2^28^ - 1) 要素)|4 byte **符号付き** 整数の配列.<br>[29 bits](#integer-型%2C-長さ%2C-要素の総数) の直後の 1 byte は 1 ならその配列が固定長であることを, 0 なら可変長であることを意味する.|
 |14|Vector(UInt)|^^|4 byte **符号なし** 整数の配列.<br>〃|
 |15|Vector(Double)|^^|8 byte **浮動小数点数**(のバイナリ表記)の配列.<br>〃|
 |16|Vector(Object)|^^|**AMF3 のデータ型**の配列.<br>固定長かどうかのフラグの直後に AMF3 のデータ型の名前(AMF3 でエンコードされた文字列)を入力し, 以降にその名前で表現される AMF3 データの実体を入力する.<br>〃|
