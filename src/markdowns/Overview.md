@@ -2080,9 +2080,6 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 最下位 **4 bits** に **0bX011** を入力する. X は 1 なら動的なトレイトである(動的なメンバを持つ)ことを, 0 ならそうでないことを意味する. 残りの 25 bits にはトレイト名の直後に入力する**静的なメンバの**総数を入力する.
 
-## 映像/音声データに利用できるコーデック
-### 音声コーデック
-### 映像コーデック
 ## 参考文献
 
 [^RTMP-Specification-1.0]: Adobe Systems Inc., "RTMP Specification 1.0" http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
