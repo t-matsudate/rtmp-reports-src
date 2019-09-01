@@ -28,8 +28,7 @@ export default {
       published: '2019-07-22',
       source: Overview
     };
-  },
-  mounted() {}
+  }
 };
 </script>
 
