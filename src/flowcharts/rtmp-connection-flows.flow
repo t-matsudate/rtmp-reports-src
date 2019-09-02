@@ -1,11 +1,18 @@
-start=>start: TCP(1935) ポートを開放する.
+start=>start: TCP(1935) ポートを
+開放する.
 end=>end: 接続を閉じる.
-handshake_tcp=>operation: TCP ハンドシェイクを行う.
-handshake_rtmp=>operation: RTMP ハンドシェイクを行う.
-application_connection=>operation: アプリケーション接続を行う.
-message_id_allocation=>operation: メッセージストリームに ID を割り当てる.
-publishing=>operation: 映像・音声データを送受信する.
-has_publishing_done=>condition: 映像・音声の送受信が完了した.
+handshake_tcp=>operation: TCP ハンドシェイク
+を行う.
+handshake_rtmp=>operation: RTMP ハンドシェイク
+を行う.
+application_connection=>operation: アプリケーション接続
+を行う.
+message_id_allocation=>operation: メッセージストリームに
+ID を割り当てる.
+publishing=>operation: 映像・音声データを
+送受信する.
+has_publishing_done=>condition: 映像・音声の送受信が
+完了した.
 
 start->handshake_tcp->handshake_rtmp->application_connection->message_id_allocation->publishing->has_publishing_done
 has_publishing_done(true)->end
