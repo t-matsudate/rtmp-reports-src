@@ -60,7 +60,29 @@ Java 言語で実装されたマルチメディアサーバである. RTMP を�
 
 RTMP ハンドシェイクの手順は公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
-<div id="rtmp-handshake-sequences-official"></div>
+<div id="rtmp-handshake-sequences-official">
+
+@startuml
+== 未初期化 ==
+Client -> Network: C0
+Network -> Server: C0
+Client -> Network: C1
+note left: RTMP バージョンが送信された.
+Server -> Network: S0
+Server -> Network: S1
+note right: RTMP バージョンが送信された.
+Network -> Client: S0
+Network -> Client: S1
+Network -> Server: C1
+Client -> Network: C2
+Server -> Network: S2
+== 肯定応答が送信された. ==
+Network -> Client: S2
+Network -> Server: C2
+== ハンドシェイクが完了した. ==
+@enduml
+
+</div>
 
 > 5.2.1.  Handshake Sequence
 >
@@ -83,18 +105,23 @@ RTMP ハンドシェイクの手順は公式ドキュメント[^RTMP-Specificati
 > The following describes the states mentioned in the handshake diagram:
 >
 > Uninitialized: The protocol version is sent during this stage. Both the client and server are uninitialized. The The client sends the protocol version in packet C0. If the server supports the version, it sends S0 and S1 in response. If not, the server responds by taking the appropriate action. In RTMP, this action is terminating the connection.  
-> Version Sent:  Both client and server are in the Version Sent state after the Uninitialized state. The client is waiting for the packet S1 and the server is waiting for the packet C1. On receiving the awaited packets, the client sends the packet C2 and the server sends the packet S2. The state then becomes Ack Sent. Ack Sent The client and the server wait for S2 and C2 respectively.  
+> Version Sent:  Both client and server are in the Version Sent state after the Uninitialized state. The client is waiting for the packet S1 and the server is waiting for the packet C1. On receiving the awaited packets, the client sends the packet C2 and the server sends the packet S2. The state then becomes Ack Sent.  
+> Ack Sent: The client and the server wait for S2 and C2 respectively.  
 > Handshake Done: The client and the server exchange messages.
 
 * 未初期化
 
 プロトコルのバージョンが送信される. クライアント側もサーバ側も未初期化である. クライアント側はプロトコルのバージョンを C0 パケットで送信する. サーバ側はそのバージョンをサポートしているならば, クライアント側に応答メッセージで S0 パケットと S1 パケットを送信する. そうでなければ, サーバ側は適切なアクションをとって応答メッセージを送信する. RTMP では, そのアクションは接続の終了である.
 
-* バージョンが送信された
+* RTMP バージョンが送信された
 
-サーバ側もクライアント側も未初期化状態の後はバージョンが送信された状態である. クライアント側は S1 パケットを待ちサーバ側は C1 パケットを待つ. 待機パケットの受信時に, クライアント側はサーバ側に C2 パケットを送信し, サーバ側はクライアント側に S2 パケットを送信する. それから肯定応答が送信された状態になる.
+サーバ側もクライアント側も未初期化状態の後は RTMP バージョンが送信された状態である. クライアント側は S1 パケットを待ちサーバ側は C1 パケットを待つ. 待機パケットの受信時に, クライアント側はサーバ側に C2 パケットを送信し, サーバ側はクライアント側に S2 パケットを送信する. それから肯定応答が送信された状態になる.
 
-* ハンドシェイク完了
+* 肯定応答が送信された
+
+クライアント側とサーバ側はそれぞれ S2 と C2 を待つ.
+
+* ハンドシェイクが完了した
 
 クライアント側とサーバ側はメッセージを交換する.
 

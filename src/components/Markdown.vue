@@ -22,6 +22,7 @@ import Imsize from 'markdown-it-imsize';
 import LinkifyImages from 'markdown-it-linkify-images';
 import Underline from 'markdown-it-underline';
 import Katex from '@neilsustc/markdown-it-katex';
+import PlantUML from 'markdown-it-plantuml';
 import hljs from 'highlight.js';
 
 export default {
@@ -94,6 +95,8 @@ export default {
         Underline
       ).use(
         Katex
+      ).use(
+        PlantUML
       )
     };
   },

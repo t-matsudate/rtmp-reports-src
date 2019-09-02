@@ -48,6 +48,10 @@ export default {
           #rtmp-connection-flows {
             text-align: center;
           }
+
+          #rtmp-handshake-sequences-official {
+            text-align: center;
+          }
         }
       }
     }
