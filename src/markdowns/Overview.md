@@ -595,7 +595,19 @@ if (!Arrays.equals(s1, c2)) {
 
 RTMP 層におけるハンドシェイクが完了したなら, サーバ側とクライアント側は映像の送受信に必要な情報を相互に伝達しあう. それは以下の手順で行う.
 
-<div id="rtmp-application-connect-sequences"></div>
+<div id="rtmp-application-connect-sequences">
+
+@startuml
+クライアント -> サーバ: Invoke(connect)
+サーバ -> クライアント: Invoke(_result)
+クライアント -> サーバ: Invoke(createStream)
+サーバ -> クライアント: Invoke(_result)
+クライアント -> サーバ: Invoke(publish)
+サーバ -> クライアント: Invoke(onStatus)
+== 映像・音声データの送受信へ ==
+@enduml
+
+</div>
 
 1. クライアント側はサーバ側に Invoke(connect) メッセージを送信する.
 2. サーバ側はクライアント側から受信した Invoke(connect) メッセージをデコードし, 応答メッセージをクライアント側に送信する.

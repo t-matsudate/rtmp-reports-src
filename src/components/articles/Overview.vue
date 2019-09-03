@@ -56,6 +56,10 @@ export default {
           #rtmp-handshake-sequences-current {
             text-align: center;
           }
+
+          #rtmp-application-connect-sequences {
+            text-align: center;
+          }
         }
       }
     }
