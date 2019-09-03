@@ -52,6 +52,10 @@ export default {
           #rtmp-handshake-sequences-official {
             text-align: center;
           }
+
+          #rtmp-handshake-sequences-current {
+            text-align: center;
+          }
         }
       }
     }

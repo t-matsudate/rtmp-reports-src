@@ -67,10 +67,16 @@ RTMP ハンドシェイクの手順は公式ドキュメント[^RTMP-Specificati
 Client -> Network: C0
 Network -> Server: C0
 Client -> Network: C1
-note left: RTMP バージョンが送信された.
+note left
+    RTMP バージョンが
+    送信された.
+end note
 Server -> Network: S0
 Server -> Network: S1
-note right: RTMP バージョンが送信された.
+note right
+    RTMP バージョンが
+    送信された.
+end note
 Network -> Client: S0
 Network -> Client: S1
 Network -> Server: C1
@@ -569,7 +575,16 @@ if (!Arrays.equals(s1, c2)) {
 
 上記の各実装より, 現在の RTMP 層におけるハンドシェイクの手順は以下に要約できる.
 
-<div id="rtmp-handshake-sequences-current"></div>
+<div id="rtmp-handshake-sequences-current">
+
+@startuml
+クライアント -> サーバ: C0+C1
+サーバ -> クライアント: S0+S1+S2
+クライアント -> サーバ: C2
+== アプリケーション接続へ ==
+@enduml
+
+</div>
 
 1. クライアント側はサーバ側に C0 チャンクと C1 チャンクをそれぞれ送信する.
 2. サーバ側はクライアント側から C0 チャンク と C1 チャンクをそれぞれ受信したなら, S0 チャンク, S1 チャンクおよび S2 チャンクをそれぞれクライアント側に送信する.
