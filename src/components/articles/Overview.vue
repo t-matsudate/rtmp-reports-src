@@ -60,6 +60,10 @@ export default {
           #rtmp-application-connect-sequences {
             text-align: center;
           }
+
+          #rtmp-invoke-connect-sequences-official {
+            text-align: center;
+          }
         }
       }
     }

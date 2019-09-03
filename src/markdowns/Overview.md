@@ -1282,7 +1282,19 @@ if (ret < 0)
 
 そして, 当該チャンクの送受信の手順は公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
-<div id="rtmp-invoke-connect-sequences-official"></div>
+<div id="rtmp-invoke-connect-sequences-official">
+
+@startuml
+== RTMP ハンドシェイクが完了した. ==
+Client -> Server: Invoke(connect)
+Server -> Client: Window Acknowledgement Size(Server BandWidth)
+Server -> Client: Set Peer BandWidth(Client BandWidth)
+Client -> Server: Window Acknowledgement Size(Server BandWidth)
+Server -> Client: User Control(Stream Begin)
+Server -> Client: Invoke(_result)
+@enduml
+
+</div>
 
 > The message flow during the execution of the command is:
 >
