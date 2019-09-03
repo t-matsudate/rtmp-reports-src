@@ -86,7 +86,10 @@ export default {
           enableMultilineRows: true
         }
       ).use(
-        Include
+        Include,
+        {
+          root: '../markdowns'
+        }
       ).use(
         Imsize
       ).use(
