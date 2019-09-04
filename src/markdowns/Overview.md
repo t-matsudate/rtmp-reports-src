@@ -2002,12 +2002,27 @@ Invoke(publish) チャンクの現在の仕様は, 要求メッセージのト�
 
 上記の仕様に従い, クライアント/サーバ側は当該要求/応答チャンクを送信する. その手順は公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
-<div id="rtmp-invoke-publish-sequences-official"></div>
+<div id="rtmp-invoke-publish-sequences-official">
+
+@startuml
+== Invoke(createStream) への応答が完了した. ==
+クライアント -> サーバ: Invoke(publish)
+サーバ -> クライアント: User Control(Stream Begin)
+クライアント -> サーバ: Metadata
+クライアント -> サーバ: Audio
+クライアント -> サーバ: Chunk Size
+サーバ -> クライアント: Invoke(onStatus)
+クライアント -> サーバ ++ : Video
+== ストリームの送信が完了するまで. ==
+@enduml
+
+</div>
 
 1. クライアント側はサーバ側に Invoke(publish) チャンクを送信する.
 2. サーバ側はクライアント側に User Control(Stream Begin) チャンクを送信する.
 3. クライアント側はサーバ側に Metadata チャンク, Audio/Video チャンクおよび Chunk Size チャンクを送信する.
 4. サーバ側はクライアント側に Invoke(onStatus) チャンクを送信する.
+5. クライアント側はストリームの送信が完了するまでサーバ側に映像・音声データを送信する.
 
 一方で, FFmpeg では以下の実装を行っている.
 

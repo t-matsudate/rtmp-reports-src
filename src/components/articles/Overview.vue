@@ -72,6 +72,10 @@ export default {
           #rtmp-invoke-connect-sequences-fixed {
             text-align: center;
           }
+
+          #rtmp-invoke-publish-sequences-official {
+            text-align: center;
+          } 
         }
       }
     }
