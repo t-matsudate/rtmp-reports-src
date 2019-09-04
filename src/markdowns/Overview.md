@@ -53,7 +53,7 @@ Java 言語で実装されたマルチメディアサーバである. RTMP を�
 2. クライアント側はサーバ側に TCP での接続を受理されたなら, TCP ハンドシェイクの後に RTMP 層でのハンドシェイクを行う.  
 (TCP パケットの受信方法や TCP ハンドシェイクの実装がまだである場合は, それも行う必要がある.)
 3. クライアント側はサーバ側に送信したハンドシェイクチャンクが妥当であると判断されたなら, RTMP 層でのアプリケーション接続を開始する.
-4. アプリケーション接続に成功したなら, サーバ側はクライアント側とやり取りするチャンクメッセージに一意に ID を割り当てる.
+4. アプリケーション接続に成功したなら, サーバ側はクライアント側とやり取りするメッセージストリームに一意に ID を割り当てる.
 5. 映像/音声チャンクの送受信を開始する.
 
 ### RTMP ハンドシェイク
@@ -162,7 +162,7 @@ Network -> Server: C2
 * 8(RTMPE/XTEA)
 * 9(RTMPE/Blowfish)
 
-以下に各 OSS の該当部分の実装を示す.
+以下に各 OSS 製品の該当部分の実装を示す.
 
 FFmpeg/rtmpproto.c#L1200-L1236[^FFmpeg/rtmpproto.c#L1200-L1236]
 
@@ -237,7 +237,7 @@ public final static String[] HANDSHAKE_TYPES = {"Undefined0", "Undefined1", "Und
 
 * すべて 0 で**なければならない**.
 
-とされているが, 2019 年現在ここには利用している Flash Player/Adobe Media Server のバージョンが割り当てられている. 以下に各 OSS の該当部分の実装を示す.
+とされているが, 2019 年現在ここには利用している Flash Player/Adobe Media Server のバージョンが割り当てられている. 以下に各 OSS 製品の該当部分の実装を示す.
 
 C1 チャンクの場合:
 
@@ -379,7 +379,7 @@ $\displaystyle\sum_{i=764}^4 R_{i}\mod 728 + 776$
 * このフィールドは C2 チャンクの場合は S1 チャンクによって送られたランダムなバイト列を, C1 チャンクの場合は S2 チャンクによって送られたランダムなバイト列を含め**なければならない**.
 * どちら側も 2 つのタイムスタンプを接続の帯域幅や待ち時間の簡易な見積もりとして使えるが, あまり役に立たない.
 
-公式ドキュメントの文言だけではわかりにくいが, 各種 OSS の実装の中にその答えがあったので以下に示す.
+公式ドキュメントの文言だけではわかりにくいが, 各種 OSS 製品の実装の中にその答えがあったので以下に示す.
 
 クライアント側の場合:
 
@@ -571,7 +571,7 @@ if (!Arrays.equals(s1, c2)) {
 * C2 チャンク: S1 チャンクと同じ内容を書き込み, 送信する.
 * S2 チャンク: C1 チャンクと同じ内容を書き込み, 送信する.
 
-ただし, Flash Player 9 および Adobe Media Server 3 以上の場合は C1 チャンクおよび S1 チャンクのランダムバイト列の所定の位置を HMAC-SHA256 で求めたハッシュに置き換えて送受信を行い, 受信時に[ハッシュの位置を探し当てて](#fp9)ダイジェストと照合することでメッセージの正当性を検証する必要がある.
+ただし, Flash Player 9 および Adobe Media Server 3 以上の場合は C1 チャンクおよび S1 チャンクのランダムバイト列の所定の位置を HMAC-SHA256 で求めたダイジェストに置き換えて送受信を行い, 受信時に[ダイジェストの位置を探し当てて](#fp9)送信前のダイジェストと照合することでメッセージの正当性を検証する必要がある.
 
 上記の各実装より, 現在の RTMP 層におけるハンドシェイクの手順は以下に要約できる.
 
@@ -616,7 +616,7 @@ RTMP 層におけるハンドシェイクが完了したなら, サーバ側と�
 4. サーバ側はクライアント側から受信した Invoke(createStream) メッセージをデコードし, 応答メッセージをクライアント側に送信する.
 5. クライアント側はサーバ側から Invoke(\_result) を受信したなら, Invoke(publish) をサーバ側に送信し, 映像の送信開始を伝える.
 6. サーバ側はクライアント側から受信した Invoke(publish) をデコードし, 応答メッセージをクライアント側に送信する.
-7. 映像/音声の送受信を開始する.
+7. クライアント側はサーバ側から Invoke(onStatus) を受信したなら, 映像/音声の送信を開始する.
 
 なお, RTMP ハンドシェイク以降に送受信されるチャンクの構造は以下の通りである. ここから Big Endian と Little Endian の違いを考慮していく必要があるので注意が必要である.
 
@@ -699,7 +699,7 @@ Type 3 (0 byte):
 * また, サーバ側もクライアント側もチャンクメッセージヘッダのメッセージ長フィールドの値とは別に Type 3 パターンのチャンクメッセージヘッダで区切られているチャンクデータを繋げる処理を独自に実装してしまっている.
   * 送信時に入力する Type 3 パターンのチャンクメッセージヘッダの数を当該フィールドに含めても**エラー**扱いされてしまう.
 
-上記の解決手段については実装パート(未執筆)で紹介する.
+上記の解決手段については別記事で紹介する.
 
 3. 拡張タイムスタンプ (4 bytes)
 
@@ -752,7 +752,7 @@ Type 3 (0 byte):
 |ID|イベントの種類|サイズ|入力内容|
 |-|-|-|-|
 |26|SWF Verification Request|0 byte|相手側に SWF の内容が正しいことを確かめてもらうためのリクエスト.|
-|27|SWF Verification Response|42 bytes|相手側から返される SWF のバイト列から生成された HMAC-SHA256 ハッシュ.<br>メッセージの内訳は以下の通りである:  \
+|27|SWF Verification Response|42 bytes|相手側から返される SWF のバイト列から生成された HMAC-SHA256 ダイジェスト.<br>メッセージの内訳は以下の通りである:  \
 |||| * 0 byte目: 1  \
 |||| * 1 byte目: 1  \
 |||| * 2 - 5 bytes目: 解凍された SWF のサイズ  \
@@ -1224,7 +1224,7 @@ Invoke(connect) およびその応答メッセージは公式ドキュメント[
 |0|AMF0|Flash 6 以降にサポートしている.|
 |3|AMF3|Flash 9 (ActionScript 3) 以降にサポートしている.|
 
-応答メッセージのプロパティフィールドおよびインフォメーションフィールドには公式に定められた仕様が存在しない. よって, 各種 OSS の実装内容から特定できる範囲で紹介する.
+応答メッセージのプロパティフィールドおよびインフォメーションフィールドには公式に定められた仕様が存在しない. よって, 各種 OSS 製品の実装内容から特定できる範囲で紹介する.
 
 FFmpeg/rtmpproto.c#L542-L575[^FFmpeg/rtmpproto.c#L542-L575]
 
@@ -1310,7 +1310,7 @@ Server -> Client: Invoke(_result)
 * Invoke(connect) の受信後, サーバ側は プロトコルメッセージ Window Acknowledgement Size / Client BandWidth をクライアント側に送信する. サーバ側もまた connect コマンドで指定されたアプリケーションに接続する.
 * サーバ側はクライアント側にプロトコルメッセージ Set Peer BandWidth / Client BandWidth をクライアント側に送信する.
 * Set Peer BandWidth / Client BandWidth の処理後に, クライアント側はサーバ側にプロトコルメッセージ Window Acknowledgement Size / Server BandWidth を送信する.
-* サーバ側はクライアント側に他のプロトコルメッセージである User Control (Stream Begin) を送信する.
+* サーバ側はクライアント側に他のプロトコルメッセージである User Control(Stream Begin) を送信する.
 * サーバ側はクライアント側にクライアント側の接続状態を通知する Invoke(\_result) を送信する.
 
 以下に FFmpeg が実際に送信しているメッセージを示す.
@@ -1443,7 +1443,7 @@ ff_rtmp_packet_destroy(&pkt);
 
 1. Window Acknowledgement Size / Server BandWidth を送信する.
 2. Set Peer Bandwidth / Client BandWidth を送信する.
-3. User Control (Stream Begin) を送信する.
+3. User Control(Stream Begin) を送信する.
 4. **Chunk Size** を送信する.
 5. Invoke(\_result) を送信する.
 6. **Invoke(onBWDone)** を送信する.
@@ -2022,7 +2022,7 @@ Invoke(publish) チャンクの現在の仕様は, 要求メッセージのト�
 2. サーバ側はクライアント側に User Control(Stream Begin) チャンクを送信する.
 3. クライアント側はサーバ側に Metadata チャンク, Audio/Video チャンクおよび Chunk Size チャンクを送信する.
 4. サーバ側はクライアント側に Invoke(onStatus) チャンクを送信する.
-5. クライアント側はストリームの送信が完了するまでサーバ側に映像・音声データを送信する.
+5. クライアント側はストリームの送信が完了するまでサーバ側に映像/音声データを送信する.
 
 一方で, FFmpeg では以下の実装を行っている.
 
@@ -2047,17 +2047,18 @@ if (!strcmp(command, "publish")) {
 クライアント -> サーバ: Invoke(publish)
 サーバ -> クライアント: User Control(Stream Begin)
 サーバ -> クライアント: Invoke(onStatus)
-== 映像・音声の送受信を開始する. ==
+== 映像/音声の送受信を開始する. ==
 クライアント -> サーバ ++ : Metadata
 クライアント -> サーバ: Audio
 クライアント -> サーバ: Video
-== 映像・音声の送信が完了するまで. ==
+== 映像/音声の送信が完了するまで. ==
 @enduml
 
 </div>
 
 1. クライアント側はサーバ側に Invoke(publish) チャンクを送信する.
 2. サーバ側はクライアント側に User Control(Stream Begin) チャンクと Invoke(onStatus) チャンクを送信する.
+3. クライアント側はストリームの送信が完了するまでサーバ側に映像/音声データを送信する.
 
 RTMP 1.0 当時に対してかなり手順が少なくなっていることを確認できる. 上記の手順に従い Invoke(onStatus) チャンクの送信を終えると, クライアント側はサーバ側に Metadata チャンクを含めた Audio/Video チャンクの送信を開始する.
 
@@ -2091,11 +2092,11 @@ RTMP 1.0 当時に対してかなり手順が少なくなっていることを�
 クライアント -> サーバ: Invoke(publish)
 サーバ -> クライアント: User Control(Stream Begin)
 サーバ -> クライアント: Invoke(onStatus)
-== 映像・音声の送受信を開始する. ==
+== 映像/音声の送受信を開始する. ==
 クライアント -> サーバ ++ : Metadata
 クライアント -> サーバ: Audio
 クライアント -> サーバ: Video
-== 映像・音声の送信が完了するまで. ==
+== 映像/音声の送信が完了するまで. ==
 @enduml
 
 </div>
@@ -2108,14 +2109,14 @@ RTMP 1.0 当時に対してかなり手順が少なくなっていることを�
    5. Flash Player 9 / Adobe Media Server 3 以降の場合, クライアント/サーバ側は, 返送チャンクの受信時に C1/S1 チャンクに埋め込んだ [HMAC-SHA256 ダイジェスト](#fp9)と所定の鍵で求めたハッシュでも同一性を検証する必要がある.
 2. 1 で RTMP 層でのハンドシェイクが成功したなら, アプリケーション間接続に必要な情報を相互に伝達しあう.
    1. クライアント側はサーバ側に Invoke(connect) チャンクを送信する.
-   2. サーバ側はクライアント側から受信した Invoke(connect) をデコードし, それが妥当であれば応答チャンクを送信する. 応答メッセージの送信順序は以下の通りである.
+   2. サーバ側はクライアント側から受信した Invoke(connect) をデコードし, それが妥当であれば応答チャンクを送信する. 応答チャンクおよびそれに付随する各種チャンクの送信順序は以下の通りである.
       1. Invoke(\_result) チャンク
       2. Window Acknowledgement Size / Server BandWidth チャンク
       3. Set Peer BandWidth / Client BandWidth チャンク
       4. User Control (Stream Begin) チャンク
       5. Chunk Size チャンク
       6. Invoke(\_result) チャンク
-   3. クライアント側はサーバ側から応答チャンクを受信したなら, 以下の手順で Invoke(createStream) チャンクとそれに付随したチャンクを同時に送信する.
+   3. クライアント側はサーバ側から応答チャンクを受信したなら, 以下の手順で Invoke(createStream) チャンクとそれに付随するチャンクを同時に送信する.
       1. Invoke(releaseStream) チャンク
       2. Invoke(FCPublish) チャンク
       3. Invoke(createStream) チャンク
@@ -2237,7 +2238,7 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 ## 参考文献
 
-[^RTMP-Specification-1.0]: Adobe Systems Inc., "RTMP Specification 1.0" http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
+[^RTMP-Specification-1.0]: Adobe Systems Inc., "RTMP Specification 1.0", http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
 
 [^FFmpeg/rtmpproto.c#L1200-L1236]: FFmpeg, "FFmpeg/rtmpproto.c#L1200-L1236", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L1200-L1236
 
