@@ -1486,12 +1486,12 @@ obs-studio/rtmp.c#L3857-L4049[^obs-studio/rtmp.c#L3857-L4049]
 @startuml
 == ハンドシェイクが完了した. ==
 クライアント -> サーバ: Invoke(connect)
-サーバ -> クライアント ++ : Invoke(_result)
+サーバ -> クライアント: Invoke(_result)
 サーバ -> クライアント: Window Acknowledgement Size / Server BandWidth
 サーバ -> クライアント: Set Peer BandWidth / Client BandWidth
 サーバ -> クライアント: User Control(Stream Begin)
 サーバ -> クライアント: Chunk Size
-サーバ -> クライアント -- : Invoke(_result)
+サーバ -> クライアント: Invoke(_result)
 @enduml
 
 </div>
