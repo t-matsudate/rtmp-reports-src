@@ -598,6 +598,7 @@ RTMP 層におけるハンドシェイクが完了したなら, サーバ側と�
 <div id="rtmp-application-connect-sequences">
 
 @startuml
+== ハンドシェイクが完了した. ==
 クライアント -> サーバ: Invoke(connect)
 サーバ -> クライアント: Invoke(_result)
 クライアント -> サーバ: Invoke(createStream)
@@ -1287,9 +1288,9 @@ if (ret < 0)
 @startuml
 == RTMP ハンドシェイクが完了した. ==
 Client -> Server: Invoke(connect)
-Server -> Client: Window Acknowledgement Size(Server BandWidth)
-Server -> Client: Set Peer BandWidth(Client BandWidth)
-Client -> Server: Window Acknowledgement Size(Server BandWidth)
+Server -> Client: Window Acknowledgement Size / Server BandWidth
+Server -> Client: Set Peer BandWidth / Client BandWidth
+Client -> Server: Window Acknowledgement Size / Server BandWidth
 Server -> Client: User Control(Stream Begin)
 Server -> Client: Invoke(_result)
 @enduml
@@ -1423,7 +1424,19 @@ ret = ff_rtmp_packet_write(rt->stream, &pkt, rt->out_chunk_size,
 ff_rtmp_packet_destroy(&pkt);
 ```
 
-<div id="rtmp-invoke-connect-sequences-ffmpeg"></div>
+<div id="rtmp-invoke-connect-sequences-ffmpeg">
+
+@startuml
+クライアント -> サーバ: Invoke(connect)
+サーバ -> クライアント: Window Acknowledgement Size / Server BandWidth
+サーバ -> クライアント: Set Peer BandWidth / Client BandWidth
+サーバ -> クライアント: User Control(Stream Begin)
+サーバ -> クライアント: Chunk Size
+サーバ -> クライアント: Invoke(_result)
+サーバ -> クライアント: Invoke(onBWDone)
+@enduml
+
+</div>
 
 以下の項目はすべてサーバ側からクライアント側への送信として記述する.
 
