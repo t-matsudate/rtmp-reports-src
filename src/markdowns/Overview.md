@@ -1427,6 +1427,7 @@ ff_rtmp_packet_destroy(&pkt);
 <div id="rtmp-invoke-connect-sequences-ffmpeg">
 
 @startuml
+== ハンドシェイクが完了した. ==
 クライアント -> サーバ: Invoke(connect)
 サーバ -> クライアント: Window Acknowledgement Size / Server BandWidth
 サーバ -> クライアント: Set Peer BandWidth / Client BandWidth
@@ -1480,7 +1481,20 @@ obs-studio/rtmp.c#L3857-L4049[^obs-studio/rtmp.c#L3857-L4049]
 
 よって, 私は Invoke(connect) の応答メッセージの送信手順を以下に変更して再送信を試みた.
 
-<div id="rtmp-invoke-connect-sequences-fixed"></div>
+<div id="rtmp-invoke-connect-sequences-fixed">
+
+@startuml
+== ハンドシェイクが完了した. ==
+クライアント -> サーバ: Invoke(connect)
+サーバ -> クライアント ++ : Invoke(_result)
+サーバ -> クライアント: Window Acknowledgement Size / Server BandWidth
+サーバ -> クライアント: Set Peer BandWidth / Client BandWidth
+サーバ -> クライアント: User Control(Stream Begin)
+サーバ -> クライアント: Chunk Size
+サーバ -> クライアント -- : Invoke(_result)
+@enduml
+
+</div>
 
 以下の項目もサーバ側からクライアント側への送信として記述する.
 

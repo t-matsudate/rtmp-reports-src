@@ -68,6 +68,10 @@ export default {
           #rtmp-invoke-connect-sequences-ffmpeg {
             text-align: center;
           }
+
+          #rtmp-invoke-connect-sequences-fixed {
+            text-align: center;
+          }
         }
       }
     }
