@@ -75,7 +75,11 @@ export default {
 
           #rtmp-invoke-publish-sequences-official {
             text-align: center;
-          } 
+          }
+
+          #rtmp-invoke-publish-sequences-ffmpeg {
+            text-align: center;
+          }
         }
       }
     }
