@@ -80,6 +80,10 @@ export default {
           #rtmp-invoke-publish-sequences-ffmpeg {
             text-align: center;
           }
+
+          #rtmp-connection-sequences-current {
+            text-align: center;
+          }
         }
       }
     }
