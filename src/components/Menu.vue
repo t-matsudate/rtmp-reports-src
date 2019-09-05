@@ -31,14 +31,7 @@ export default {
         top: 0;
         bottom: 0;
         overflow-y: scroll;
-
-        @media (orientation: landscape) {
-            width: 20%;
-        }
-
-        @media (orientation: portrait) {
-            width: 50%;
-        }
+        width: 50%;
 
         background-color: hsl(90, 50%, 999%);
 
@@ -55,6 +48,7 @@ export default {
 
         #menu-list {
             nav {
+              ul {
                 li {
                     font-size: 100%;
                     font-weight: normal;
@@ -66,7 +60,31 @@ export default {
                         text-decoration: none;
                     }
                 }
+              }
             }
+        }
+
+        #submenu {
+          margin-top: 1em;
+          font-size: 0.8em;
+
+          nav {
+            ul {
+              list-style: none;
+
+              li {
+                font-weight: normal;
+                font-style: normal;
+                padding: 0.5em;
+
+
+                a {
+                  color: hsl(0, 0%, 0%);
+                  text-decoration: none;
+                }
+              }
+            }
+          }
         }
 
         &.hidden {

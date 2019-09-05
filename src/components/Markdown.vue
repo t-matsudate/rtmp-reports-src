@@ -107,6 +107,17 @@ export default {
     marked() {
       return this.md.render(this.source);
     }
+  },
+  mounted() {
+    let toc = document.getElementsByClassName('table-of-contents');
+    let menu = document.getElementById('menu');
+    let submenu = document.createElement('div');
+    let nav = document.createElement('nav');
+
+    submenu.id = 'submenu';
+    nav.innerHTML = toc[0].innerHTML;
+    submenu.appendChild(nav);
+    menu.appendChild(submenu);
   }
 };
 </script>
