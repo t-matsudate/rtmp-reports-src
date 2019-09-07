@@ -47,6 +47,8 @@ Java 言語で実装されたマルチメディアサーバである. RTMP を�
 
 <div id="rtmp-connection-flows"></div>
 
+図1. RTMPの大まかな流れ {#caption-rtmp-connection-flows}
+
 1. サーバ側は TCP の 1935 番ポートを開放し, クライアント側からの接続を待ち受ける.
 2. クライアント側はサーバ側に TCP での接続を受理されたなら, TCP ハンドシェイクの後に RTMP 層でのハンドシェイクを行う.  
 (TCP パケットの受信方法や TCP ハンドシェイクの実装がまだである場合は, それも行う必要がある.)
@@ -87,6 +89,8 @@ Network -> Server: C2
 @enduml
 
 </div>
+
+図2. 公式ドキュメントが説明している RTMP ハンドシェイクのシーケンス {#caption-rtmp-handshake-sequences-official}
 
 > 5.2.1.  Handshake Sequence
 >
@@ -584,6 +588,8 @@ if (!Arrays.equals(s1, c2)) {
 
 </div>
 
+図3. 現在の RTMP ハンドシェイクの手順 {#caption-rtmp-handshake-sequences-current}
+
 1. クライアント側はサーバ側に C0 チャンクと C1 チャンクをそれぞれ送信する.
 2. サーバ側はクライアント側から C0 チャンク と C1 チャンクをそれぞれ受信したなら, S0 チャンク, S1 チャンクおよび S2 チャンクをそれぞれクライアント側に送信する.
 3. クライアント側はサーバ側から S0 チャンク, S1 チャンクおよび S2 チャンクをそれぞれ受信したなら, C2 チャンクをサーバ側へ送信する.
@@ -607,6 +613,8 @@ RTMP 層におけるハンドシェイクが完了したなら, サーバ側と�
 @enduml
 
 </div>
+
+図4. アプリケーション接続の大まかなシーケンス {#caption-rtmp-application-connect-sequences}
 
 1. クライアント側はサーバ側に Invoke(connect) メッセージを送信する.
 2. サーバ側はクライアント側から受信した Invoke(connect) メッセージをデコードし, 応答メッセージをクライアント側に送信する.
@@ -1295,6 +1303,8 @@ Server -> Client: Invoke(_result)
 
 </div>
 
+図5. 公式が説明している Invoke(connect) のシーケンス {#caption-rtmp-invoke-connect-sequences-official}
+
 > The message flow during the execution of the command is:
 >
 > 1. Client sends the connect command to the server to request to connect with the server application instance.
@@ -1437,6 +1447,8 @@ ff_rtmp_packet_destroy(&pkt);
 
 </div>
 
+図6. FFmpeg が行っている Invoke(connect) のシーケンス {#caption-rtmp-invoke-connect-sequences-ffmpeg}
+
 以下の項目はすべてサーバ側からクライアント側への送信として記述する.
 
 1. Window Acknowledgement Size / Server BandWidth を送信する.
@@ -1493,6 +1505,8 @@ obs-studio/rtmp.c#L3857-L4049[^obs-studio/rtmp.c#L3857-L4049]
 @enduml
 
 </div>
+
+図7. エラーメッセージ対処後の Invoke(connect) のシーケンス {#caption-rtmp-invoke-connect-sequences-fixed}
 
 以下の項目もサーバ側からクライアント側への送信として記述する.
 
@@ -2016,6 +2030,8 @@ Invoke(publish) チャンクの現在の仕様は, 要求メッセージのト�
 
 </div>
 
+図7. 公式が説明している Invoke(publish) のシーケンス {#caption-rtmp-invoke-publish-sequences-official}
+
 1. クライアント側はサーバ側に Invoke(publish) チャンクを送信する.
 2. サーバ側はクライアント側に User Control(Stream Begin) チャンクを送信する.
 3. クライアント側はサーバ側に Metadata チャンク, Audio/Video チャンクおよび Chunk Size チャンクを送信する.
@@ -2054,11 +2070,13 @@ if (!strcmp(command, "publish")) {
 
 </div>
 
+図8. FFmpeg が行っている Invoke(publish) のシーケンス {#caption-rtmp-invoke-publish-sequences-ffmpeg}
+
 1. クライアント側はサーバ側に Invoke(publish) チャンクを送信する.
 2. サーバ側はクライアント側に User Control(Stream Begin) チャンクと Invoke(onStatus) チャンクを送信する.
 3. クライアント側はストリームの送信が完了するまでサーバ側に映像/音声データを送信する.
 
-RTMP 1.0 当時に対してかなり手順が少なくなっていることを確認できる. 上記の手順に従い Invoke(onStatus) チャンクの送信を終えると, クライアント側はサーバ側に Metadata チャンクを含めた Audio/Video チャンクの送信を開始する.
+こちらも RTMP 1.0 当時に対して手順が変わっていることを確認できる. 上記の手順に従い Invoke(onStatus) チャンクの送信を終えると, クライアント側はサーバ側に Metadata チャンクを含めた Audio/Video チャンクの送信を開始する.
 
 ここで, 上記の各種接続手順より現在の RTMP 層で映像/音声データを送受信するまでに必要な手順は以下に要約できる.
 
@@ -2098,6 +2116,8 @@ RTMP 1.0 当時に対してかなり手順が少なくなっていることを�
 @enduml
 
 </div>
+
+図9. RTMP 全体の現在の*大まかな*シーケンス {#caption-rtmp-connection-sequences-current}
 
 1. クライアント側とサーバ側は TCP 層での接続の後, RTMP 層でのハンドシェイクを行う.
    1. クライアント側はサーバ側に C0 チャンクと C1 チャンクを送信する.

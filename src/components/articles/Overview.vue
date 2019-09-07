@@ -84,6 +84,48 @@ export default {
           #rtmp-connection-sequences-current {
             text-align: center;
           }
+
+          #caption {
+            &-rtmp-connection-flows {
+              text-align: center;
+            }
+
+            &-rtmp-handshake-sequences-official {
+              text-align: center;
+            }
+
+            &-rtmp-handshake-sequences-current {
+              text-align: center;
+            }
+
+            &-rtmp-application-connect-sequences {
+              text-align: center;
+            }
+
+            &-rtmp-invoke-connect-sequences-official {
+              text-align: center;
+            }
+
+            &-rtmp-invoke-connect-sequences-ffmpeg {
+              text-align: center;
+            }
+
+            &-rtmp-invoke-connect-sequences-fixed {
+              text-align: center;
+            }
+
+            &-rtmp-invoke-publish-sequences-official {
+              text-align: center;
+            }
+
+            &-rtmp-invoke-publish-sequences-ffmpeg {
+              text-align: center;
+            }
+
+            &-rtmp-connection-sequences-current {
+              text-align: center;
+            }
+          }
         }
       }
     }
