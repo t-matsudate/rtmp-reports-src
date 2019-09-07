@@ -25,75 +25,80 @@ export default {
 
 <style lang="less">
 #grids {
-    #menu {
-        z-index: 2;
-        position: fixed;
-        top: 0;
-        bottom: 0;
-        overflow-y: scroll;
-        width: 50%;
+  #menu {
+    z-index: 2;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    overflow-y: scroll;
+    width: 50%;
 
-        background-color: hsl(90, 50%, 999%);
+    background-color: hsl(90, 50%, 99%);
 
-        .menu-bar {
-            padding: 1em;
+    .menu-bar {
+      padding: 1em;
+
+      a {
+        .fas {
+          font-size: 200%;
+          color: hsl(90, 80%, 40%);
+        }
+      }
+    }
+
+    #menu-list {
+      nav {
+        ul {
+          li {
+            font-size: 100%;
+            font-weight: normal;
+            font-style: normal;
+            padding: 0.5em;
 
             a {
-                .fas {
-                    font-size: 200%;
-                    color: hsl(90, 80%, 40%);
-                }
+              color: hsl(0, 0%, 0%);
+              text-decoration: none;
             }
-        }
 
-        #menu-list {
-            nav {
-              ul {
-                li {
-                    font-size: 100%;
-                    font-weight: normal;
-                    font-style: normal;
-                    padding: 0.5em;
-
-                    a {
-                        color: hsl(0, 0%, 0%);
-                        text-decoration: none;
-                    }
-                }
-              }
-            }
-        }
-
-        #submenu {
-          margin-top: 1em;
-          font-size: 0.8em;
-
-          nav {
-            ul {
-              list-style: none;
-
-              li {
-                font-weight: normal;
-                font-style: normal;
-                padding: 0.5em;
-
-
-                a {
-                  color: hsl(0, 0%, 0%);
-                  text-decoration: none;
-                }
-              }
+            &#current-article {
+              font-weight: bold;
+              color: hsl(90, 80%, 40%);
             }
           }
         }
-
-        &.hidden {
-            display: none;
-        }
-
-        &.shown {
-            display: block;
-        }
+      }
     }
+
+    #submenu {
+      margin-top: 1em;
+      font-size: 0.8em;
+
+      nav {
+        ul {
+          list-style: none;
+
+          li {
+            font-weight: normal;
+            font-style: normal;
+            padding: 0.5em;
+
+
+            a {
+              color: hsl(0, 0%, 0%);
+              text-decoration: none;
+            }
+          }
+        }
+      }
+    }
+
+    &.hidden {
+        display: none;
+    }
+
+    &.shown {
+        display: block;
+    }
+  }
 }
 </style>
