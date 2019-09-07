@@ -109,6 +109,7 @@ export default {
     }
   },
   mounted() {
+    // 記事の目次をメニューにコピーする.
     let toc = document.getElementsByClassName('table-of-contents');
     let menu = document.getElementById('menu');
     let submenu = document.createElement('div');
@@ -118,6 +119,11 @@ export default {
     nav.innerHTML = toc[0].innerHTML;
     submenu.appendChild(nav);
     menu.appendChild(submenu);
+
+    // 記事中の目次を削除する.
+    for (let i = 0; i < toc.length; i++) {
+      toc[i].innerHTML = null;
+    }
   }
 };
 </script>
