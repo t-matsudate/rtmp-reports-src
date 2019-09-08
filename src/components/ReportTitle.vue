@@ -30,7 +30,7 @@ export default {
     head.appendChild(ogUrl);
 
     // 現在見ているタイトルのメニューを太字にする.
-    for (let menuItem of document.querySelectorAll('#menu-list nav ul li')) {
+    for (let menuItem of document.querySelectorAll('#menu-list nav ul li a')) {
       if (menuItem.innerHTML === this.reportTitle) {
         menuItem.id = 'current-article';
         break;

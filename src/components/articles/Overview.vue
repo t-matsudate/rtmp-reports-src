@@ -25,7 +25,7 @@ export default {
   },
   data() {
     return {
-      title: 'RTMPの概要',
+      title: 'RTMP の概要',
       author: 'T.Matsudate',
       published: '2019-07-22',
       source: Overview

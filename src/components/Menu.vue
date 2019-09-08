@@ -5,7 +5,7 @@
       <nav>
         <ul>
           <li><a href="https://t-matsudate.github.io">Back to Portfolio</a></li>
-          <router-link tag="li" to="/overview">RTMPの概要</router-link>
+          <li><router-link tag="a" to="/overview">RTMP の概要</router-link></li>
         </ul>
       </nav>
     </div>
@@ -58,11 +58,11 @@ export default {
             a {
               color: hsl(0, 0%, 0%);
               text-decoration: none;
-            }
 
-            &#current-article {
-              font-weight: bold;
-              color: hsl(90, 80%, 40%);
+              &#current-article {
+                font-weight: bold;
+                color: hsl(90, 80%, 40%);
+              }
             }
           }
         }
