@@ -27,8 +27,8 @@ export default {
     return {
       title: 'RTMP の概要',
       author: 'T.Matsudate',
-      published: '2019-07-22',
-      source: Overview
+      published: '2019-09-09',
+      source: Overview,
     };
   },
   mounted() {

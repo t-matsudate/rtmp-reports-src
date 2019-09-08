@@ -60,8 +60,9 @@ export default {
               text-decoration: none;
 
               &#current-article {
-                font-weight: bold;
                 color: hsl(90, 80%, 40%);
+                font-weight: bold;
+                text-decoration: none;
               }
             }
           }
@@ -86,6 +87,11 @@ export default {
             a {
               color: hsl(0, 0%, 0%);
               text-decoration: none;
+
+              &:hover {
+                color: hsl(90, 80%, 40%);
+                text-decoration: underline;
+              }
             }
           }
         }
