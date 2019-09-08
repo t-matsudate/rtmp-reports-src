@@ -3,11 +3,16 @@ import VueRouter from 'vue-router'
 import App from './App.vue'
 import Overview from './components/articles/Overview.vue'
 import NotFound from './components/articles/NotFound.vue'
+import Index from './components/Index.vue'
 
 Vue.use(VueRouter)
 Vue.config.productionTip = false
 
 const routes = [
+  {
+    path: '/',
+    component: Index
+  },
   {
     path: '/overview',
     component: Overview
