@@ -6,7 +6,7 @@
         <ul>
           <li><a href="https://t-matsudate.github.io">Back to Portfolio</a></li>
           <li><a href="/rtmp-reports">目次</a></li>
-          <li><a href="/rtmp-reports/overview">RTMP の概要</a></li>
+          <li><router-link to="/rtmp-reports/overview">RTMP の概要</router-link></li>
         </ul>
       </nav>
     </div>
