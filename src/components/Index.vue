@@ -4,7 +4,7 @@
     <h1>目次</h1>
     <ol>
       <li>
-        <h2><router-link to="/overview">RTMP の概要</router-link></h2>
+        <h2><a href="/rtmp-reports/overview">RTMP の概要</a></h2>
         <p>投稿日: <time datetime="2019-09-09">2019-09-09</time></p>
         <p>記載内容：</p>
         <ul>

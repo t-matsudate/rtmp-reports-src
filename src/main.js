@@ -10,15 +10,15 @@ Vue.config.productionTip = false
 
 const routes = [
   {
-    path: '/',
-    component: Index
+    path: '/rtmp-reports',
+    component: Index,
   },
   {
-    path: '/overview',
+    path: '/rtmp-reports/overview',
     component: Overview
   },
   {
-    path: '*',
+    path: '/rtmp-reports/*',
     component: NotFound
   }
 ]

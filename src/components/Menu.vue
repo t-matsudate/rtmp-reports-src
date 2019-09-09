@@ -5,8 +5,8 @@
       <nav>
         <ul>
           <li><a href="https://t-matsudate.github.io">Back to Portfolio</a></li>
-          <li><router-link to="/">目次</router-link></li>
-          <li><router-link to="/overview">RTMP の概要</router-link></li>
+          <li><a href="/rtmp-reports">目次</a></li>
+          <li><a href="/rtmp-reports/overview">RTMP の概要</a></li>
         </ul>
       </nav>
     </div>
