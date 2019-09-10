@@ -8,9 +8,9 @@
 import GridMenu from './components/GridMenu.vue'
 
 export default {
-    name: 'App',
-    components: {
-        GridMenu
-    }
+  name: 'App',
+  components: {
+    GridMenu
+  }
 }
 </script>

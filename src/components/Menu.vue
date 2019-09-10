@@ -17,10 +17,10 @@
 import MenuBar from './MenuBar.vue'
 
 export default {
-    name: 'Menu',
-    components: {
-        MenuBar
-    }
+  name: 'Menu',
+  components: {
+    MenuBar
+  }
 }
 </script>
 
@@ -100,11 +100,11 @@ export default {
     }
 
     &.hidden {
-        display: none;
+      display: none;
     }
 
     &.shown {
-        display: block;
+      display: block;
     }
   }
 }

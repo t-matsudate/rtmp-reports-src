@@ -19,14 +19,14 @@ export default {
 
 <style lang="less">
 #grids {
-    #main {
-        z-index: 0;
-        margin-top: 3em;
-        grid-row: 2;
+  #main {
+    z-index: 0;
+    margin-top: 3em;
+    grid-row: 2;
 
-        main {
-            padding: 2em 1em 1em 1em;
-        }
+    main {
+      padding: 2em 1em 1em 1em;
     }
+  }
 }
 </style>
