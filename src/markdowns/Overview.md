@@ -215,7 +215,7 @@ else
     clientsig[-1] = 0x03;
 ```
 
-red5-server-common/RTMPHandshake.java#L67[^red5-server-common/RTMPHandshake.java#L67]
+red5-server-common/RTMPHandshake.java#L56[^red5-server-common/RTMPHandshake.java#L56]
 
 ```java
 public final static String[] HANDSHAKE_TYPES = {"Undefined0", "Undefined1", "Undefined2", "RTMP", "Undefined4", "Undefined5", "RTMPE", "Undefined7", "RTMPE XTEA", "RTMPE BLOWFISH"};
@@ -302,7 +302,7 @@ else
 
 S1 チャンクの場合:
 
-red5-server/InboundHandshake.java#L348-L352[^red5-server/InboundHandshake.java#L348-L352]
+red5-server/InboundHandshake.java#L337-L341[^red5-server/InboundHandshake.java#L337-L341]
 
 ```java
 // version 4
@@ -544,8 +544,8 @@ if (memcmp(serversig, clientsig, RTMP_SIG_SIZE) != 0)
 }
 ```
 
-red5-server/InboundHandshake.java#L213-L224[^red5-server/InboundHandshake.java#L213-L224]
-red5-server/InboundHandshake.java#L304-L306[^red5-server/InboundHandshake.java#L304-L306]
+red5-server/InboundHandshake.java#L202-L213[^red5-server/InboundHandshake.java#L202-L213]
+red5-server/InboundHandshake.java#L293-L295[^red5-server/InboundHandshake.java#L293-L295]
 
 ```java
 IoBuffer s0s1s2 = IoBuffer.allocate(Constants.HANDSHAKE_SIZE * 2 + 1); // 3073
@@ -973,7 +973,7 @@ stopKeyframeSearch:
 }
 ```
 
-red5-server-common/Aggregate.java#L119-L209[^red5-server-common/Aggregate.java#L119-L209]
+red5-server-common/Aggregate.java#L108-L198[^red5-server-common/Aggregate.java#L108-L198]
 
 ```java
 /**
@@ -2264,7 +2264,7 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 [^obs-studio/handshake.h#L831-L837]: obsproject, "obs-studio/handshake.h#L831-L837", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L831-L837
 
-[^red5-server-common/RTMPHandshake.java#L67]: Red5, "red5-server-common/RTMPHandshake.java#L67", https://github.com/Red5/red5-server-common/blob/v1.2.2/src/main/java/org/red5/server/net/rtmp/RTMPHandshake.java#L67
+[^red5-server-common/RTMPHandshake.java#L56]: Red5, "red5-server-common/RTMPHandshake.java#L56", https://github.com/Red5/red5-server-common/blob/v1.2.2/src/main/java/org/red5/server/net/rtmp/RTMPHandshake.java#L56
 
 [^FFmpeg/rtmpproto.c#L1200-L1207]: FFmpeg, "FFmpeg/rtmpproto.c#L1200-L1207", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1200-L1207
 
@@ -2272,7 +2272,7 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 [^obs-studio/handshake.h#L842-L865]: obsproject, "obs-studio/handshake.h#L842-L865", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L842-L865
 
-[^red5-server/InboundHandshake.java#L348-L352]: Red5, "red5-server/InboundHandshake.java#L348-L352", https://github.com/Red5/red5-server/blob/v1.2.2/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L348-L352
+[^red5-server/InboundHandshake.java#L337-L341]: Red5, "red5-server/InboundHandshake.java#L337-L341", https://github.com/Red5/red5-server/blob/v1.2.3/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L337-L341
 
 [^FFmpeg/rtmpproto.c#L1248-L1258]: FFmpeg, "FFmpeg/rtmpproto.c#L1248-L1258", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1248-L1258
 
@@ -2292,9 +2292,9 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 [^obs-studio/handshake.h#L1524-L1528]: obsproject, "obs-studio/handshake.h#L1524-L1528", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1524-L1528
 
-[^red5-server/InboundHandshake.java#L213-L224]: Red5, "red5-server/InboundHandshake.java#L213-L224", https://github.com/Red5/red5-server/blob/v1.2.2/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L213-L224
+[^red5-server/InboundHandshake.java#L202-L213]: Red5, "red5-server/InboundHandshake.java#L202-L213", https://github.com/Red5/red5-server/blob/v1.2.3/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L202-L213
 
-[^red5-server/InboundHandshake.java#L304-L306]: Red5, "red5-server/InboundHandshake.java#L304-L306", https://github.com/Red5/red5-server/blob/v1.2.2/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L304-L306
+[^red5-server/InboundHandshake.java#L293-L295]: Red5, "red5-server/InboundHandshake.java#L293-L295", https://github.com/Red5/red5-server/blob/v1.2.3/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L293-L295
 
 [^FFmpeg/rtmpproto.c#L2347-L2395]: FFmpeg, "FFmpeg/rtmpproto.c#L2347-L2395", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L2347-L2395
 
@@ -2302,7 +2302,7 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 [^obs-studio/rtmp.c#L4972-L5059]: obsproject, "obs-studio/rtmp.c#L4972-L5059", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4972-L5059
 
-[^red5-server-common/Aggregate.java#L119-L209]: Red5, "red5-server-common/Aggregate.java#L119-L209", https://github.com/Red5/red5-server-common/blob/v1.2.2/src/main/java/org/red5/server/net/rtmp/event/Aggregate.java#L119-L209
+[^red5-server-common/Aggregate.java#L108-L198]: Red5, "red5-server-common/Aggregate.java#L108-L198", https://github.com/Red5/red5-server-common/blob/v1.2.2/src/main/java/org/red5/server/net/rtmp/event/Aggregate.java#L108-L198
 
 [^FFmpeg/rtmpproto.c#L542-L575]: FFmpeg, "FFmpeg/rtmpproto.c#L542-L575", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L542-L575
 
