@@ -33,16 +33,19 @@
     "markdown-it-table-of-contents": "^0.4.4",
     "markdown-it-task-lists": "^2.1.1",
     "markdown-it-underline": "^1.0.1",
-    "nuxt": "^2.11.0"
+    "nuxt": "^2.11.0",
+    "fs-extra": "^8.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
     "eslint": "^6.7.2",
-    "eslint-plugin-vue": "^6.0.1",
     "github-markdown-css": "^3.0.1",
+    "style-loader": "^1.1.2",
+    "css-loader": "^3.4.1",
     "less": "^3.10.3",
     "less-loader": "^5.0",
     "raw-loader": "^4.0.0",
+    "markdown-it-loader": "^0.7.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.3"
   },

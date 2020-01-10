@@ -1,0 +1,20 @@
+@import "common";
+
+#grids {
+  display: grid;
+  grid-template-rows: repeat(2, auto);
+
+  a {
+    .theme-links();
+  }
+
+  #main {
+    z-index: 0;
+    margin-top: 3em;
+    grid-row: 2;
+
+    main {
+      padding: 2em 1em 1em 1em;
+    }
+  }
+}

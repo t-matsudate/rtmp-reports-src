@@ -1,32 +1,13 @@
-<template>
-  <div id="header">
-    <header>
-      <MenuBar />
-      <h1 id="app-title">RTMP Implementation Reports</h1>
-    </header>
-  </div>
-</template>
+@import "common";
 
-<script>
-import MenuBar from './MenuBar.vue'
-
-export default {
-  name: 'Header',
-  components: {
-    MenuBar
-  }
-}
-</script>
-
-<style lang="less">
 #grids {
   #header {
     z-index: 1;
     position: fixed;
     grid-row: 1;
     width: 100%;
-    background-color: hsl(90, 80%, 40%);
-    color: hsl(270, 100%, 100%);
+    background-color: .make-theme-color(mouse)[@theme-background];
+    color: .make-theme-color(mouse)[@theme-text];
 
     header {
       display: grid;
@@ -39,7 +20,7 @@ export default {
         a {
           .fas {
             font-size: 200%;
-            color: hsl(270, 100%, 100%);
+            color: .make-theme-color(mouse)[@theme-text];
           }
         }
       }
@@ -54,4 +35,3 @@ export default {
     }
   }
 }
-</style>

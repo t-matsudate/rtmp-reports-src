@@ -2258,7 +2258,7 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 [^RTMP-Specification-1.0]: Adobe Systems Inc., "RTMP Specification 1.0", http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
 
-[^FFmpeg/rtmpproto.c#L1200-L1236]: FFmpeg, "FFmpeg/rtmpproto.c#L1200-L1236", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1200-L1236
+[^FFmpeg/rtmpproto.c#L1200-L1236]: FFmpeg, "FFmpeg/rtmpproto.c#L1200-L1236", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L1200-L1236
 
 [^obs-studio/rtmp.c#L4062]: obsproject, "obs-studio/rtmp.c#L4062", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4062
 
@@ -2266,75 +2266,75 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 [^red5-server-common/RTMPHandshake.java#L56]: Red5, "red5-server-common/RTMPHandshake.java#L56", https://github.com/Red5/red5-server-common/blob/v1.2.2/src/main/java/org/red5/server/net/rtmp/RTMPHandshake.java#L56
 
-[^FFmpeg/rtmpproto.c#L1200-L1207]: FFmpeg, "FFmpeg/rtmpproto.c#L1200-L1207", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1200-L1207
+[^FFmpeg/rtmpproto.c#L1200-L1207]: FFmpeg, "FFmpeg/rtmpproto.c#L1200-L1207", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L1200-L1207
 
-[^FFmpeg/rtmp.h#L32-L41]: FFmpeg, "FFmpeg/rtmp.h#L32-L41", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmp.h#L32-L41
+[^FFmpeg/rtmp.h#L32-L41]: FFmpeg, "FFmpeg/rtmp.h#L32-L41", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmp.h#L32-L41
 
-[^obs-studio/handshake.h#L842-L865]: obsproject, "obs-studio/handshake.h#L842-L865", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L842-L865
+[^obs-studio/handshake.h#L842-L865]: obsproject, "obs-studio/handshake.h#L842-L865", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/handshake.h#L842-L865
 
 [^red5-server/InboundHandshake.java#L337-L341]: Red5, "red5-server/InboundHandshake.java#L337-L341", https://github.com/Red5/red5-server/blob/v1.2.3/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L337-L341
 
-[^FFmpeg/rtmpproto.c#L1248-L1258]: FFmpeg, "FFmpeg/rtmpproto.c#L1248-L1258", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1248-L1258
+[^FFmpeg/rtmpproto.c#L1248-L1258]: FFmpeg, "FFmpeg/rtmpproto.c#L1248-L1258", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L1248-L1258
 
-[^obs-studio/rtmp.c#L4089-L4112]: obsproject, "obs-studio/rtmp.c#L4089-L4112", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4089-L4112
+[^obs-studio/rtmp.c#L4089-L4112]: obsproject, "obs-studio/rtmp.c#L4089-L4112", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/rtmp.c#L4089-L4112
 
-[^obs-studio/handshake.h#L936-L945]: obsproject, "obs-studio/handshake.h#L936-L945", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L936-L945
+[^obs-studio/handshake.h#L936-L945]: obsproject, "obs-studio/handshake.h#L936-L945", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/handshake.h#L936-L945
 
-[^obs-studio/handshake.h#L1078-L1083]: obsproject, "obs-studio/handshake.h#L1078-L1083", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1078-L1083
+[^obs-studio/handshake.h#L1078-L1083]: obsproject, "obs-studio/handshake.h#L1078-L1083", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/handshake.h#L1078-L1083
 
-[^obs-studio/handshake.h#L1170-L1174]: obsproject, "obs-studio/handshake.h#L1170-L1174", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1170-L10174
+[^obs-studio/handshake.h#L1170-L1174]: obsproject, "obs-studio/handshake.h#L1170-L1174", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/handshake.h#L1170-L10174
 
-[^FFmpeg/rtmpproto.c#L1452-L1472]: FFmpeg, "FFmpeg/rtmpproto.c#L1452-L1472", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1452-L1472
+[^FFmpeg/rtmpproto.c#L1452-L1472]: FFmpeg, "FFmpeg/rtmpproto.c#L1452-L1472", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L1452-L1472
 
-[^obs-studio/rtmp.c#L4152-L4178]: obsproject, "obs-studio/rtmp.c#L4152-L4178", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4152-L4178
+[^obs-studio/rtmp.c#L4152-L4178]: obsproject, "obs-studio/rtmp.c#L4152-L4178", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/rtmp.c#L4152-L4178
 
-[^obs-studio/handshake.h#L1442-L1447]: obsproject, "obs-studio/handshake.h#L1442-L1447", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1442-L1447
+[^obs-studio/handshake.h#L1442-L1447]: obsproject, "obs-studio/handshake.h#L1442-L1447", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/handshake.h#L1442-L1447
 
-[^obs-studio/handshake.h#L1524-L1528]: obsproject, "obs-studio/handshake.h#L1524-L1528", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/handshake.h#L1524-L1528
+[^obs-studio/handshake.h#L1524-L1528]: obsproject, "obs-studio/handshake.h#L1524-L1528", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/handshake.h#L1524-L1528
 
 [^red5-server/InboundHandshake.java#L202-L213]: Red5, "red5-server/InboundHandshake.java#L202-L213", https://github.com/Red5/red5-server/blob/v1.2.3/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L202-L213
 
 [^red5-server/InboundHandshake.java#L293-L295]: Red5, "red5-server/InboundHandshake.java#L293-L295", https://github.com/Red5/red5-server/blob/v1.2.3/src/main/java/org/red5/server/net/rtmp/InboundHandshake.java#L293-L295
 
-[^FFmpeg/rtmpproto.c#L2347-L2395]: FFmpeg, "FFmpeg/rtmpproto.c#L2347-L2395", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L2347-L2395
+[^FFmpeg/rtmpproto.c#L2347-L2395]: FFmpeg, "FFmpeg/rtmpproto.c#L2347-L2395", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L2347-L2395
 
-[^obs-studio/rtmp.c#L1490-L1523]: obsproject, "obs-studio/rtmp.c#L1490-L1523", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1490-L1523
+[^obs-studio/rtmp.c#L1490-L1523]: obsproject, "obs-studio/rtmp.c#L1490-L1523", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/rtmp.c#L1490-L1523
 
-[^obs-studio/rtmp.c#L4972-L5059]: obsproject, "obs-studio/rtmp.c#L4972-L5059", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L4972-L5059
+[^obs-studio/rtmp.c#L4972-L5059]: obsproject, "obs-studio/rtmp.c#L4972-L5059", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/rtmp.c#L4972-L5059
 
 [^red5-server-common/Aggregate.java#L108-L198]: Red5, "red5-server-common/Aggregate.java#L108-L198", https://github.com/Red5/red5-server-common/blob/v1.2.2/src/main/java/org/red5/server/net/rtmp/event/Aggregate.java#L108-L198
 
-[^FFmpeg/rtmpproto.c#L542-L575]: FFmpeg, "FFmpeg/rtmpproto.c#L542-L575", https://github.com/FFmpeg/FFmpeg/blob/n4.2/libavformat/rtmpproto.c#L542-L575
+[^FFmpeg/rtmpproto.c#L542-L575]: FFmpeg, "FFmpeg/rtmpproto.c#L542-L575", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L542-L575
 
-[^FFmpeg/rtmpproto.c#L485-L588]: FFmpeg, "FFmpeg/rtmpproto.c#L485-L588", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L485-L588
+[^FFmpeg/rtmpproto.c#L485-L588]: FFmpeg, "FFmpeg/rtmpproto.c#L485-L588", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L485-L588
 
-[^FFmpeg/rtmppkt.c#L238-L244]: FFmpeg, "FFmpeg/rtmppkt.c#L238-L244", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmppkt.c#L238-L244
+[^FFmpeg/rtmppkt.c#L238-L244]: FFmpeg, "FFmpeg/rtmppkt.c#L238-L244", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmppkt.c#L238-L244
 
-[^obs-studio/rtmp.c#L3857-L4049]: obsproject, "obs-studio/rtmp.c#L3857-L4049", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L3857-L4049
+[^obs-studio/rtmp.c#L3857-L4049]: obsproject, "obs-studio/rtmp.c#L3857-L4049", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/rtmp.c#L3857-L4049
 
-[^FFmpeg/rtmpproto.c#L593-L615]: FFmpeg, "FFmpeg/rtmpproto.c#L593-L615", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L593-L615
+[^FFmpeg/rtmpproto.c#L593-L615]: FFmpeg, "FFmpeg/rtmpproto.c#L593-L615", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L593-L615
 
-[^FFmpeg/rtmpproto.c#L1981-L1999]: FFmpeg, "FFmpeg/rtmpproto.c#L1981-L1999", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1981-L1999
+[^FFmpeg/rtmpproto.c#L1981-L1999]: FFmpeg, "FFmpeg/rtmpproto.c#L1981-L1999", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L1981-L1999
 
-[^obs-studio/rtmp.c#L1990-L2016]: obsproject, "obs-studio/rtmp.c#L1990-L2016", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1990-L2016
+[^obs-studio/rtmp.c#L1990-L2016]: obsproject, "obs-studio/rtmp.c#L1990-L2016", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/rtmp.c#L1990-L2016
 
-[^FFmpeg/rtmpproto.c#L641-L663]: FFmpeg, "FFmpeg/rtmpproto.c#L641-L663", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L641-L663
+[^FFmpeg/rtmpproto.c#L641-L663]: FFmpeg, "FFmpeg/rtmpproto.c#L641-L663", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L641-L663
 
-[^FFmpeg/rtmpproto.c#L1956-L1965]: FFmpeg, "FFmpeg/rtmpproto.c#L1956-L1965", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1956-L1965
+[^FFmpeg/rtmpproto.c#L1956-L1965]: FFmpeg, "FFmpeg/rtmpproto.c#L1956-L1965", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L1956-L1965
 
-[^obs-studio/rtmp.c#L2020-L2046]: obsproject, "obs-studio/rtmp.c#L2020-L2046", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L2020-L2046
+[^obs-studio/rtmp.c#L2020-L2046]: obsproject, "obs-studio/rtmp.c#L2020-L2046", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/rtmp.c#L2020-L2046
 
-[^FFmpeg/rtmpproto.c#L665-L687]: FFmpeg, "FFmpeg/rtmpproto.c#L665-L687", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L665-L687
+[^FFmpeg/rtmpproto.c#L665-L687]: FFmpeg, "FFmpeg/rtmpproto.c#L665-L687", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L665-L687
 
-[^obs-studio/rtmp.c#L1899-L1922]: obsproject, "obs-studio/rtmp.c#L1899-L1922", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L1899-L1922
+[^obs-studio/rtmp.c#L1899-L1922]: obsproject, "obs-studio/rtmp.c#L1899-L1922", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/rtmp.c#L1899-L1922
 
-[^FFmpeg/rtmpproto.c#L838-L863]: FFmpeg, "FFmpeg/rtmpproto.c#L838-L863", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L838-L863
+[^FFmpeg/rtmpproto.c#L838-L863]: FFmpeg, "FFmpeg/rtmpproto.c#L838-L863", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L838-L863
 
 [^FFmpeg/rtmpproto.c#L1858-L1899]: FFmpeg, "FFmpeg/rtmpproto.c#L1858-L1899", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1858-L1899
 
-[^obs-studio/rtmp.c#L2081-L2112]: obsproject, "obs-studio/rtmp.c#L2081-L2112", https://github.com/obsproject/obs-studio/blob/23.2.1/plugins/obs-outputs/librtmp/rtmp.c#L2081-L2112
+[^obs-studio/rtmp.c#L2081-L2112]: obsproject, "obs-studio/rtmp.c#L2081-L2112", https://github.com/obsproject/obs-studio/blob/24.0.6/plugins/obs-outputs/librtmp/rtmp.c#L2081-L2112
 
-[^FFmpeg/rtmpproto.c#L1965-L1973]: FFmpeg, "FFmpeg/rtmpproto.c#L1965-L1973", https://github.com/FFmpeg/FFmpeg/blob/n4.2.1/libavformat/rtmpproto.c#L1965-L1973
+[^FFmpeg/rtmpproto.c#L1965-L1973]: FFmpeg, "FFmpeg/rtmpproto.c#L1965-L1973", https://github.com/FFmpeg/FFmpeg/blob/n4.2.2/libavformat/rtmpproto.c#L1965-L1973
 
 [^AMF0-File-Format-Specification]: Adobe Systems Inc., "AMF0 File Format Specification", https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf0-file-format-specification.pdf
 

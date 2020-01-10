@@ -1,0 +1,49 @@
+<template>
+  <article id="index">
+    <Author :author="author" :published="published" :modified="modified" />
+    <ReportTitle :report-title="title" />
+    <ol>
+      <li>
+        <h2><nuxt-link to="/articles/overview">RTMP の概要</nuxt-link></h2>
+        <ul class="datetime">
+          <li class="modified">更新日: <time :datetime="modified">{{ modified }}</time></li>
+          <li class="published">投稿日: <time :datetime="published">{{ published }}</time></li>
+        </ul>
+        <p>記載内容：</p>
+        <ul class="contents">
+          <li>RTMP とは何か.</li>
+          <li>基本的な通信手順について.</li>
+          <li>既存製品はどのように通信しているか.</li>
+          <li>私達はそれらの製品とどのように通信していけばよいか.</li>
+        </ul>
+      </li>
+    </ol>
+    <ShareButtons :text="title" :path="$route.path" />
+  </article>
+</template>
+
+<script>
+import Author from '@/components/Author.vue'
+import ReportTitle from '@/components/ReportTitle.vue'
+import ShareButtons from '@/components/ShareButtons.vue'
+
+export default {
+  components: {
+    Author,
+    ReportTitle,
+    ShareButtons
+  },
+  data() {
+    return {
+      title: 'RTMP Implementation Reports',
+      author: 'T.Matsudate',
+      published: '2019-09-09',
+      modified: '2020-01-04'
+    }
+  }
+}
+</script>
+
+<style lang="less">
+@import "~assets/less/index";
+</style>

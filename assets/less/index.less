@@ -1,0 +1,54 @@
+#grids {
+  #main {
+    main {
+      article {
+        font-family: serif;
+
+        h1 {
+          padding: 1em;
+          font-family: sans-serif;
+          font-size: 200%;
+          font-weight: bold;
+          font-style: normal;
+          text-align: center;
+        }
+
+        ol {
+          margin: 1em;
+
+          li {
+            h2 {
+              font-size: 150%;
+              font-weight: normal;
+              font-style: normal;
+
+              a {
+                text-decoration: none;
+
+                &:hover {
+                  text-decoration: underline;
+                }
+              }
+            }
+
+            .datetime {
+              list-style: none;
+
+              .published, .modified {
+                font-family: serif;
+
+                time {
+                  font-family: monospace;
+                }
+              }
+            }
+
+            .contents {
+              margin: 1em;
+            }
+          }
+        }
+      }
+    }
+  }
+}

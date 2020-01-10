@@ -8,7 +8,6 @@
 
 <script>
 export default {
-  name: 'MenuBar',
   methods: {
     slideSideMenu: function() {
       let menu = document.getElementById("menu");

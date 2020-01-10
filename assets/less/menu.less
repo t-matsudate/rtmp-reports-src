@@ -1,30 +1,10 @@
-<template>
-  <div id="menu" class="hidden">
-    <MenuBar />
-    <div id="menu-list">
-      <nav>
-        <ul>
-          <li><a href="https://t-matsudate.github.io">Back to Portfolio</a></li>
-          <li><a href="/rtmp-reports">目次</a></li>
-          <li><router-link to="/rtmp-reports/overview">RTMP の概要</router-link></li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-</template>
+@import "common";
 
-<script>
-import MenuBar from './MenuBar.vue'
+@menu-background-color: hsl(0, 0%, 99%);
+@menu-text-color: hsl(0, 0%, 0%);
+@menu-current-article-color: .make-theme-color(mouse)[@theme-background];
+@menu-hovered-color: .make-theme-color(mouse)[@theme-background];
 
-export default {
-  name: 'Menu',
-  components: {
-    MenuBar
-  }
-}
-</script>
-
-<style lang="less">
 #grids {
   #menu {
     z-index: 2;
@@ -33,8 +13,7 @@ export default {
     bottom: 0;
     overflow-y: scroll;
     width: 50%;
-
-    background-color: hsl(90, 50%, 99%);
+    background-color: @menu-background-color;
 
     .menu-bar {
       padding: 1em;
@@ -42,7 +21,7 @@ export default {
       a {
         .fas {
           font-size: 200%;
-          color: hsl(90, 80%, 40%);
+          color: .make-theme-color(mouse)[@theme-background];
         }
       }
     }
@@ -57,11 +36,11 @@ export default {
             padding: 0.5em;
 
             a {
-              color: hsl(0, 0%, 0%);
+              color: @menu-text-color;
               text-decoration: none;
 
               &#current-article {
-                color: hsl(90, 80%, 40%);
+                color: @menu-current-article-color;
                 font-weight: bold;
                 text-decoration: none;
               }
@@ -84,13 +63,11 @@ export default {
             font-style: normal;
             padding: 0.5em;
 
-
             a {
-              color: hsl(0, 0%, 0%);
+              color: @menu-text-color;
               text-decoration: none;
 
               &:hover {
-                color: hsl(90, 80%, 40%);
                 text-decoration: underline;
               }
             }
@@ -108,4 +85,3 @@ export default {
     }
   }
 }
-</style>
