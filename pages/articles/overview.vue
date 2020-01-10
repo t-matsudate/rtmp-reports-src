@@ -38,6 +38,12 @@ export default {
 
     rtmp_connection_flows.drawSVG('rtmp-connection-flows')
   },
+  beforeRouteLeave(to, from, next) {
+    let submenu = document.getElementById('submenu')
+
+    submenu.outerHTML = null
+    next()
+  },
   head() {
     return {
       title: this.title,

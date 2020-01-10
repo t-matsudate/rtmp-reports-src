@@ -26,7 +26,7 @@ export default {
     for (let i = 0; i < toc.length; i++) {
       toc[i].innerHTML = null
     }
-  },
+  }
 }
 </script>
 
