@@ -29,6 +29,7 @@ export default {
       published: '2019-09-09',
       modified: '2020-01-04',
       title: 'RTMP の概要',
+      description: 'RTMP とは何か. 基本的な通信手順は何か. 既存製品はどのように通信しているか. 私達はそれらの製品とどのように通信していけばよいか.',
       source: Overview
     }
   },
@@ -43,13 +44,16 @@ export default {
       meta: [
         { hid: 'description',
           name: 'description',
-          content: 'RTMP とは何か. 基本的な通信手順は何か. 既存製品はどのように通信しているか. 私達はそれらの製品とどのように通信していけばよいか.' },
+          content: this.description },
         { hid: 'title',
           property: 'og:title',
           content: this.title },
         { hid: 'og:description',
           property: 'og:description',
-          content: 'RTMP とは何か. 基本的な通信手順は何か. 既存製品はどのように通信しているか. 私達はそれらの製品とどのように通信していけばよいか.' },
+          content: this.description },
+        { hid: 'url',
+          property: 'og:url',
+          content: 'https://t-matsudate.github.io/rtmp-reports/articles/overview' },
         { hid: 'type',
           property: 'og:type',
           content: 'article' },

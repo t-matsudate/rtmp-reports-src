@@ -36,9 +36,32 @@ export default {
   data() {
     return {
       title: 'RTMP Implementation Reports',
+      description: 'RTMP サーバの実装メモと直近の仕様の整理.',
       author: 'T.Matsudate',
       published: '2019-09-09',
       modified: '2020-01-04'
+    }
+  },
+  head() {
+    return {
+      title: this.title,
+      meta: [
+        { hid: 'description',
+          name: 'description',
+          content: this.description },
+        { hid: 'title',
+          property: 'og:title',
+          content: this.title },
+        { hid: 'type',
+          property: 'og:type',
+          content: 'website' },
+        { hid: 'url',
+          property: 'og:url',
+          content: 'https://t-matsudate.github.io/rtmp-reports/' },
+        { hid: 'og:description',
+          property: 'og:description',
+          content: this.description }
+      ]
     }
   }
 }

@@ -6,7 +6,7 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "DEPLOY_ENV='GH_PAGES' nuxt generate"
   },
   "dependencies": {
     "@neilsustc/markdown-it-katex": "^0.4.0",

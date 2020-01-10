@@ -21,8 +21,6 @@ import hljs from 'highlight.js'
 export default {
   mode: 'spa',
   head: {
-    title: 'RTMP Implementation Reports',
-    titleTemplate: subtitle => subtitle ? `${subtitle} - RTMP Implementation Report` : 'RTMP Implementation Reports',
     meta: [
       { charset: 'utf-8' },
       { 'http-equiv': 'X-UA-Compatible',
@@ -33,10 +31,6 @@ export default {
       { hid: 'author',
         name: 'author',
         content: 'T.Matsudate' },
-      { hid: 'description',
-        name: 'description',
-        content: 'RTMP サーバの実装メモと直近の仕様の整理.',
-        template: description => description ? description : 'RTMP サーバの実装メモと直近の仕様の整理.' },
       { hid: 'generator',
         name: 'generator',
         content: 'Nuxt.js' },
@@ -49,27 +43,11 @@ export default {
       { hid: 'publisher',
         name: 'publisher',
         content: 'T.Matsudate' },
-      { hid: 'title',
-        property: 'og:title',
-        content: 'RTMP Implementation Reports',
-        template: subtitle => subtitle ? `${subtitle} - RTMP Implementation Reports` : 'RTMP Implementation Reports' },
-      { hid: 'type',
-        property: 'og:type',
-        content: 'website',
-        template: type => type ? type : 'website' },
-      { hid: 'url',
-        property: 'og:url',
-        content: 'https://t-matsudate.github.io/rtmp-reports',
-        template: path => `https://t-matsudate.github.io/rtmp-reports${path}` },
-      { hid: 'og:description',
-        property: 'og:description',
-        content: 'RTMP サーバの実装メモと直近の仕様の整理.',
-        template: description => description ? description : 'RTMP サーバの実装メモと直近の仕様の整理.' }
     ],
     link: [
       { rel: 'icon',
         type: 'image/x-icon',
-        href: '/favicon.ico' },
+        href: process.env.DEPLOY_ENV == 'GH_PAGES' ? '/rtmp-reports/favicon.ico' : '/favicon.ico' },
       { rel: 'stylesheet',
         href: 'https://use.fontawesome.com/releases/v5.12.0/css/solid.css' },
       { rel: 'stylesheet',
@@ -220,4 +198,7 @@ export default {
       'markdown-it': {}
     }
   },
+  router: {
+    base: process.env.DEPLOY_ENV === 'GH_PAGES' ? '/rtmp-reports/' : '/'
+  }
 }
