@@ -109,7 +109,7 @@ export default {
                 html: true,
                 linkify: true,
                 typographer: true,
-                highlight(str, lang) {
+                highlight: (str, lang) => {
                   if (lang && hljs.getLanguage(lang)) {
                     try {
                       return '<pre class="hljs"><code>' + hljs.highlight(lang, str).value + '</code></pre>'

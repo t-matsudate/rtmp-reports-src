@@ -26,7 +26,7 @@ export default {
     for (let i = 0; i < toc.length; i++) {
       toc[i].innerHTML = null
     }
-  }
+  },
 }
 </script>
 
@@ -34,6 +34,7 @@ export default {
 @import "~github-markdown-css/github-markdown.css";
 @import "~katex/dist/katex.min.css";
 @import "~assets/less/markdown";
+@import "~highlight.js/styles/github.css";
 
 #grids {
   #main {
