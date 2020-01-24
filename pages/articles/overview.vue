@@ -38,63 +38,93 @@ export default {
 
     rtmp_connection_flows.drawSVG('rtmp-connection-flows')
   },
+  head() {
+    return {
+      title: this.title,
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: this.description
+        },
+        {
+          hid: 'title',
+          property: 'og:title',
+          content: this.title
+        },
+        {
+          hid: 'og:description',
+          property: 'og:description',
+          content: this.description
+        },
+        {
+          hid: 'url',
+          property: 'og:url',
+          content: 'https://t-matsudate.github.io/rtmp-reports/articles/overview'
+        },
+        {
+          hid: 'type',
+          property: 'og:type',
+          content: 'article'
+        },
+        {
+          hid: 'published_time',
+          property: 'og:article:published_time',
+          content: this.published
+        },
+        {
+          hid: 'modified_time',
+          property: 'og:article:modified_time',
+          content: this.modified
+        },
+        {
+          hid: 'section',
+          property: 'og:article:section',
+          content: 'Overview'
+        },
+        {
+          hid: 'author',
+          property: 'og:article:author',
+          content: this.author
+        },
+        {
+          hid: 'tag1',
+          property: 'og:article:tag',
+          content: 'RTMP'
+        },
+        {
+          hid: 'tag2',
+          property: 'og:article:tag',
+          content: '実装'
+        },
+        {
+          hid: 'tag3',
+          property: 'og:article:tag',
+          content: 'FFmpeg'
+        },
+        {
+          hid: 'tag4',
+          property: 'og:article:tag',
+          content: 'Open Broadcaster Software'
+        },
+        {
+          hid: 'tag5',
+          property: 'og:article:tag',
+          content: 'OBS'
+        },
+        {
+          hid: 'tag6',
+          property: 'og:article:tag',
+          content: 'Red5'
+        }
+      ]
+    }
+  },
   beforeRouteLeave(to, from, next) {
     let submenu = document.getElementById('submenu')
 
     submenu.outerHTML = null
     next()
-  },
-  head() {
-    return {
-      title: this.title,
-      meta: [
-        { hid: 'description',
-          name: 'description',
-          content: this.description },
-        { hid: 'title',
-          property: 'og:title',
-          content: this.title },
-        { hid: 'og:description',
-          property: 'og:description',
-          content: this.description },
-        { hid: 'url',
-          property: 'og:url',
-          content: 'https://t-matsudate.github.io/rtmp-reports/articles/overview' },
-        { hid: 'type',
-          property: 'og:type',
-          content: 'article' },
-        { hid: 'published_time',
-          property: 'og:article:published_time',
-          content: this.published },
-        { hid: 'modified_time',
-          property: 'og:article:modified_time',
-          content: this.modified },
-        { hid: 'section',
-          property: 'og:article:section',
-          content: 'Overview' },
-        { hid: 'author',
-          property: 'og:article:author',
-          content: this.author },
-        { hid: 'tag1',
-          property: 'og:article:tag',
-          content: 'RTMP' },
-        { hid: 'tag2',
-          property: 'og:article:tag',
-          content: '実装' },
-        { hid: 'tag3',
-          property: 'og:article:tag',
-          content: 'FFmpeg' },
-        { hid: 'tag4',
-          property: 'og:article:tag',
-          content: 'Open Broadcaster Software' },
-        { hid: 'tag5',
-          property: 'og:article:tag',
-          content: 'OBS' },
-        { hid: 'tag6',
-          property: 'og:article:tag',
-          content: 'Red5' }
-      ]
-    }
   }
 }
 </script>
