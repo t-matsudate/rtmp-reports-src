@@ -1,80 +1,83 @@
-.hljs() {
+.hljs(@rate) {
   /* 4K */
   @media (orientation: landscape) and (max-width: 3840px) {
-    max-width: 3072px;
+    max-width: 3840px * @rate;
   }
 
   @media (orientation: portrait) and (max-width: 2160px) {
-    max-width: 1728px;
+    max-width: 2160px * @rate;
   }
 
   /* WQHD */
   @media (orientation: landscape) and (max-width: 2560px) {
-    max-width: 2048px;
+    max-width: 2560px * @rate;
   }
 
   @media (orientation: portrait) and (max-width: 1440px) {
-    max-width: 1152px;
+    max-width: 1440px * @rate;
   }
 
   /* Desktop or Laptop (Full HD) */
   @media (orientation: landscape) and (max-width: 1920px) {
-    max-width: 1536px;
+    max-width: 1920px * @rate;
   }
 
   @media (orientation: portrait) and (max-width: 1080px) {
-    max-width: 864px;
+    max-width: 1080px * @rate;
   }
 
   /* iPad (up to 12 inchs) */
   @media (orientation: landscape) and (max-width: 1366px) {
-    max-width: 1092px;
+    max-width: 1366px * @rate;
   }
 
   @media (orientation: portrait) and (max-width: 1024px) {
-    max-width: 819px;
+    max-width: 1024px * @rate;
   }
 
   /* iPhone (up to X) */
   @media (orientation: landscape) and (max-width: 812px) {
-    max-width: 649px;
+    max-width: 812px * @rate;
   }
 
   @media (orientation: portrait) and (max-width: 375px) {
-    max-width: 300px;
+    max-width: 375px * @rate;
   }
 
   /* Android (based on Pixel XL) */
   @media (orientation: landscape) and (max-width: 640px) {
-    max-width: 512px;
+    max-width: 640px * @rate;
   }
 
   @media (orientation: portrait) and (max-width: 360px) {
-    max-width: 288px;
+    max-width: 360px * @rate;
   }
 }
 
 #grids {
   #main {
     main {
-      #report {
+      article {
         padding: 1em;
-        font-family: serif;
 
-        strong {
-          font-weight: bold;
-        }
+        .markdown-body {
+          font-family: serif;
 
-        em {
-          font-style: italic;
-        }
+          strong {
+            font-weight: bold;
+          }
 
-        .footnotes {
-          word-break: break-word;
-        }
+          em {
+            font-style: italic;
+          }
 
-        .hljs {
-          .hljs();
+          .footnotes {
+            word-break: break-word;
+          }
+
+          .hljs {
+            .hljs(0.87);
+          }
         }
       }
     }
