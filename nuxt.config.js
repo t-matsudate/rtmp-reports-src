@@ -23,42 +23,66 @@ export default {
   head: {
     meta: [
       { charset: 'utf-8' },
-      { 'http-equiv': 'X-UA-Compatible',
-        content: 'IE=edge' },
-      { hid: 'viewport',
+      {
+        'http-equiv': 'X-UA-Compatible',
+        content: 'IE=edge'
+      },
+      {
+        hid: 'viewport',
         name: 'viewport',
-        content: 'width=device-width, initial-scale=1' },
-      { hid: 'author',
+        content: 'width=device-width, initial-scale=1'
+      },
+      {
+        hid: 'author',
         name: 'author',
-        content: 'T.Matsudate' },
-      { hid: 'generator',
+        content: 'T.Matsudate'
+      },
+      {
+        hid: 'generator',
         name: 'generator',
-        content: 'Nuxt.js' },
-      { hid: 'keyword',
+        content: 'Nuxt.js'
+      },
+      {
+        hid: 'keyword',
         name: 'keyword',
-        content: 'func,func_hs,GitHub Pages,T.Matsudate,t-matsudate,Vue.js,Nuxt.js,less,rtmp,RTMP' },
-      { hid: 'creator',
+        content: 'func,func_hs,GitHub Pages,T.Matsudate,t-matsudate,Vue.js,Nuxt.js,less,rtmp,RTMP'
+      },
+      {
+        hid: 'creator',
         name: 'creator',
-        content: 'T.Matsudate' },
-      { hid: 'publisher',
+        content: 'T.Matsudate'
+      },
+      {
+        hid: 'publisher',
         name: 'publisher',
-        content: 'T.Matsudate' },
+        content: 'T.Matsudate'
+      },
     ],
     link: [
-      { rel: 'icon',
+      {
+        rel: 'icon',
         type: 'image/x-icon',
-        href: process.env.DEPLOY_ENV == 'GH_PAGES' ? '/rtmp-reports/favicon.ico' : '/favicon.ico' },
-      { rel: 'stylesheet',
-        href: 'https://use.fontawesome.com/releases/v5.12.0/css/solid.css' },
-      { rel: 'stylesheet',
-        href: 'https://use.fontawesome.com/releases/v5.12.0/css/brands.css' },
-      { rel: 'stylesheet',
-        href: 'https://use.fontawesome.com/releases/v5.12.0/css/fontawesome.css' },
+        href: process.env.DEPLOY_ENV == 'GH_PAGES' ? '/rtmp-reports/favicon.ico' : '/favicon.ico'
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://use.fontawesome.com/releases/v5.12.0/css/solid.css'
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://use.fontawesome.com/releases/v5.12.0/css/brands.css'
+      },
+      {
+        rel: 'stylesheet',
+        href: 'https://use.fontawesome.com/releases/v5.12.0/css/fontawesome.css'
+      },
     ],
     script: [
-      { async: true,
+      {
+        async: true,
         src: 'https://platform.twitter.com/widgets.js',
-        charset: 'utf-8' },
+        charset: 'utf-8'
+      },
     ]
   },
   loading: {
@@ -124,14 +148,14 @@ export default {
                   [
                     MultimdTable,
                     {
-                      enableRawspan: true,
-                      enableMultilineRows: true
+                      rawspan: true,
+                      multiline: true
                     }
                   ],
                   [
                     Include,
                     {
-                      root: 'assets/markdowns'
+                      root: 'assets/markdowns/include'
                     }
                   ],
                   Imsize,
