@@ -11,20 +11,29 @@ export default {
     }
   },
   mounted() {
-    // 記事の目次をメニューにコピーする.
-    let toc = document.getElementsByClassName('table-of-contents')
-    let menu = document.getElementById('menu')
-    let submenu = document.createElement('div')
-    let nav = document.createElement('nav')
+    let oldSubmenu = document.getElementById('submenu')
 
-    submenu.id = 'submenu'
-    nav.innerHTML = toc[0].innerHTML
-    submenu.appendChild(nav)
-    menu.appendChild(submenu)
+    if (oldSubmenu === null) {
+      // 記事の目次をメニューにコピーする.
+      let toc = document.getElementsByClassName('table-of-contents')[0]
+      let menu = document.getElementById('menu')
+      let submenu = document.createElement('div')
+      let nav = document.createElement('nav')
 
-    // 記事中の目次を削除する.
-    for (let i = 0; i < toc.length; i++) {
-      toc[i].innerHTML = null
+      submenu.id = 'submenu'
+      nav.innerHTML = toc.innerHTML
+      submenu.appendChild(nav)
+      menu.appendChild(submenu)
+
+      // 記事中の目次を削除する.
+      toc.outerHTML = null
+    } else {
+      /* すでにある場合は上書きする. (記事の目次が変更された場合も考慮) */
+      let toc = document.getElementsByClassName('table-of-contents')[0]
+      let nav = oldSubmenu.getElementsByTagName('nav')[0]
+
+      nav.innerHTML = toc.innerHTML
+      toc.outerHTML = null
     }
   }
 }
@@ -33,8 +42,8 @@ export default {
 <style lang="less">
 @import "~github-markdown-css/github-markdown.css";
 @import "~katex/dist/katex.min.css";
-@import "~assets/less/markdown";
 @import "~highlight.js/styles/github.css";
+@import "~assets/less/markdown";
 
 #grids {
   #main {
