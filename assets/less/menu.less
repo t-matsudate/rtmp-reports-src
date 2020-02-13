@@ -3,6 +3,7 @@
 @menu-background-color: hsl(0, 0%, 99%);
 @menu-text-color: hsl(0, 0%, 0%);
 @menu-current-article-color: .make-theme-color(mouse)[@theme-background];
+@menu-current-section-color: .make-theme-color(mouse)[@theme-background];
 @menu-hovered-color: .make-theme-color(mouse)[@theme-background];
 
 #grids {
@@ -42,7 +43,7 @@
               &#current-article {
                 color: @menu-current-article-color;
                 font-weight: bold;
-                text-decoration: none;
+                text-decoration: underline;
               }
             }
           }
