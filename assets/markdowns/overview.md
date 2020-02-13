@@ -62,31 +62,7 @@ RTMP ハンドシェイクの手順は公式ドキュメント[^RTMP-Specificati
 
 <div id="rtmp-handshake-sequences-official">
 
-@startuml
-== 未初期化 ==
-Client -> Network: C0
-Network -> Server: C0
-Client -> Network: C1
-note left
-    RTMP バージョンが
-    送信された.
-end note
-Server -> Network: S0
-Server -> Network: S1
-note right
-    RTMP バージョンが
-    送信された.
-end note
-Network -> Client: S0
-Network -> Client: S1
-Network -> Server: C1
-Client -> Network: C2
-Server -> Network: S2
-== 肯定応答が送信された. ==
-Network -> Client: S2
-Network -> Server: C2
-== ハンドシェイクが完了した. ==
-@enduml
+!!!include(handshake-sequences-official.md)!!!
 
 </div>
 
@@ -579,12 +555,7 @@ if (!Arrays.equals(s1, c2)) {
 
 <div id="rtmp-handshake-sequences-current">
 
-@startuml
-クライアント -> サーバ: C0+C1
-サーバ -> クライアント: S0+S1+S2
-クライアント -> サーバ: C2
-== アプリケーション接続へ ==
-@enduml
+!!!include(handshake-sequences-current.md)!!!
 
 </div>
 
@@ -601,16 +572,7 @@ RTMP 層におけるハンドシェイクが完了したなら, サーバ側と�
 
 <div id="rtmp-application-connect-sequences">
 
-@startuml
-== ハンドシェイクが完了した. ==
-クライアント -> サーバ: Invoke(connect)
-サーバ -> クライアント: Invoke(_result)
-クライアント -> サーバ: Invoke(createStream)
-サーバ -> クライアント: Invoke(_result)
-クライアント -> サーバ: Invoke(publish)
-サーバ -> クライアント: Invoke(onStatus)
-== 映像・音声データの送受信へ ==
-@enduml
+!!!include(application-connect-sequences.md)!!!
 
 </div>
 
@@ -721,430 +683,31 @@ Type 3 (0 byte):
 
 ##### メッセージの種類
 
-|メッセージ種類 ID|チャンクデータの種類|サイズ|入力内容|
-|-|-|-|-|
-|1|Chunk Size|4 bytes|チャンク**データ**を一度に受け取るデータ量. (チャンク全体を指していないことに注意)<br>公式ドキュメントでは Set Chunk Size と呼んでいるが, 既存 OSS 製品では Chunk Size と呼ばれているため, ソースコードとの統一性のために本稿でも Chunk Size と呼ぶことにする.<br>最上位ビットは 0 で**なければならない**.<br>4 bytes が確保されているが実際のチャンクデータの長さの値は高々 3 bytes であるため, 0xFFFFFF よりも大きくなることはまずない.<br>仕様書では少なくとも 128 (bytes) である**べき**で, かつ少なくとも 1 (byte) で**なければならない**としている.<br>一方でデフォルト値を 128 (bytes) としており, 多くの製品はこれに従っている.|
-|2|Abort|4 bytes|送受信を中止する対象のチャンクストリーム ID.<br>何らかの理由でチャンクストリームを強制的に閉じなければならない時に当該チャンクデータにチャンクストリーム ID を入力して終了を伝える.|
-|3|Bytes Read|4 bytes|これまでに受信したデータ量.<br>公式ドキュメントでは Acknowledgement と呼んでいるが既存 OSS 製品では Bytes Read と呼ばれているため, ソースコードとの統一性のために本稿でも Bytes Read と呼ぶことにする.<br>サーバ側もクライアント側も, 受信したデータ量が事前に通知しているウィンドウサイズに等しくなった場合に当該チャンクデータにそのデータ量を入力して送信し**なければならない**.<br>ウィンドウサイズは相手側から当該チャンクデータを受信せずに送れるデータ量の最大値である.|
-|4|User Control|2 bytes<br>+<br>4 bytes から 8 bytes|主にメッセージストリーム ID だが, どの種類のイベントを入力するかによって具体的な内容に違いがある.<br>詳細は [User Control Message の種類とデータ](#user-control-message-の種類とデータ)を参照.|
-|5|Window Acknowledgement Size (Official, FFmpeg),<br>Server BandWidth (Red5, OBS)|4 bytes|サーバ側が Acknowledgement チャンクを送信せずに送れる最大のデータ量.<br>つまりサーバ側の回線帯域である.<br>多くの場合, 3 Mbps 前後をデフォルト値とされているが変更可能である.|
-|6|Set Peer BandWidth (Official, FFmpeg),<br>Client BandWidth (Red5, OBS)|4 bytes|クライアント側が Acknowledgement チャンク送信せずに送れる最大のデータ量.<br>つまりクライアント側の回線帯域である.<br>多くの場合, 3 Mbps 前後をデフォルト値とされているがこれも変更可能である.|
-|8|Audio|可変|音声データ.<br>可変長の生のバイト列が入力される.<br>詳細は後日記載.|
-|9|Video|可変|映像データ.<br>以下同上.<br>詳細は後日記載.|
-|15|Data(Official),<br>Notify(FFmpeg, Red5)<br>Info(OBS)|可変|チャンク(主に映像・音声)のメタデータ.<br>AMF3 がチャンクデータに適用されている.|
-|18|^^|^^|〃<br>AMF0 がチャンクデータに適用されている.|
-|16|Shared Object|可変|名前と値のペアのコレクション.<br>複数のクライアント間やインスタンス間で同期をとるための Flash Objectである.<br>既存の OSS 製品では Red5 のみが実装しているが, 具体的なデータ構造を特定できないため詳細は割愛する.<br>AMF3 がチャンクデータに適用されている.|
-|19|^^|^^|〃<br>AMF0 がチャンクデータに適用されている.|
-|17|Invoke|可変|クライアントとサーバの間で映像の送受信の際に必要になるメッセージを入力する.<br>公式ドキュメントでは Command と呼んでいるが既存 OSS 製品では Invoke と呼ばれているため, ソースコードとの統一性のために本稿でも Invoke と呼ぶことにする.<br>映像・音声データの送受信より前に送受信される基本的なメッセージはすべてこの Invoke チャンクを介して行われる.<br>AMF3 がチャンクデータに適用されている.|
-|20|^^|^^|〃<br>AMF0 がチャンクデータに適用されている.|
-|22|Metadata|可変|音声や映像に関するメタデータ.<br>公式ドキュメントでは Aggregate と呼んでいるが既存 OSS 製品では Metadata と呼ばれているため, ソースコードとの統一性のために本稿でも MetaData と呼ぶことにする.<br>詳細は [Metadata の構造](#metadata-の構造)を参照.|
+!!!include(message-types.md)!!!
 
 ##### User Control Message の種類とデータ
 
 以下は公式ドキュメントに記載されており, 既存 OSS 製品の実装にも見られるイベントである.
 
-|ID|イベントの種類|サイズ|入力内容|
-|-|-|-|-|
-|0|Stream Begin|4 bytes|クライアントに割り当てられているメッセージストリーム ID.<br>クライアント側からの Invoke(connect) の受信直後は通信の仕様上必然的に 0 になる.|
-|1|Stream EOF|4 bytes|〃<br>プレイバックが終了したクライアントのメッセージストリーム ID を入力する.|
-|2|Stream Dry|4 bytes|〃<br>一定時間以上ストリーム上にデータがないクライアントのメッセージストリーム ID を入力する.|
-|3|Set Buffer Length|8 bytes|クライアントに割り当てられているメッセージストリームID (4 bytes) とミリ秒単位のバッファの長さ (4 bytes).<br>クライアント側がストリームを渡来するデータをバッファリングするために使われるバッファのサイズをサーバ側に通知する.<br>サーバ側がストリームを処理し始める前に送信される.|
-|4|Stream Is Recorded|4 bytes|クライアントに割り当てられているメッセージストリーム ID.<br>サーバ側が当該ストリームが**録画用**として使われていることをクライアント側に通知する.|
-|6|Ping|4 bytes|**サーバ側**のタイムスタンプ.<br>公式ドキュメントでは Ping Request と呼んでいるが既存の OSS 製品では Ping と呼ばれているため, ソースコードとの統一性のために本稿でも Ping と呼ぶことにする.<br>サーバ側が通信がクライアントに到達するかどうかを試すために送信する.|
-|7|Pong|4 bytes|**クライアント側が Ping と共に受け取った**タイムスタンプ.<br>公式ドキュメントでは Ping Response と呼んでいるが既存の OSS 製品では Pong と呼ばれているため, ソースコードとの統一性のために本稿でも Pong と呼ぶことにする.<br>クライアント側がサーバ側からの Ping が到達したことをサーバ側に伝えるために送信する.|
+!!!include(user-control-events-common.md)!!!
 
 以下は公式ドキュメントには記載されていないが, 既存 OSS 製品の実装で見られるイベントである.
 
-|ID|イベントの種類|サイズ|入力内容|
-|-|-|-|-|
-|26|SWF Verification Request|0 byte|相手側に SWF の内容が正しいことを確かめてもらうためのリクエスト.|
-|27|SWF Verification Response|42 bytes|相手側から返される SWF のバイト列から生成された HMAC-SHA256 ダイジェスト.<br>メッセージの内訳は以下の通りである:  \
-|||| * 0 byte目: 1  \
-|||| * 1 byte目: 1  \
-|||| * 2 - 5 bytes目: 解凍された SWF のサイズ  \
-|||| * 6 - 9 bytes目: 同上  \
-|||| * 10 - 31 bytes目: 解凍された SWF のハッシュをハンドシェイクチャンクのダイジェストで署名したバイト列|
+!!!include(user-control-events-oss.md)!!!
 
 以下は公式ドキュメントには記載されておらず, Red5 と OBS の実装で見られるイベントである.
 
-|ID|イベントの種類|サイズ|入力内容|
-|-|-|-|-|
-|31|Buffer Empty|4 bytes|クライアントに割り当てられているメッセージストリーム ID.<br>rtmpdump などの一部のプログラムはバッファのサイズをできるだけ大きく設定し, サーバ側にできるだけ高速にデータを送信させる.<br>サーバ側が完全なバッファをそのようなクライアント側へ送信した際に, バッファを完全に送信し現在のバッファは空の状態であることをクライアント側へ伝えるためにこのイベントを送信する.<br>その後, サーバ側はクライアント側がそのバッファを消費しきるまで送信を待つ.|
-|32|Buffer Ready (OBS),<br>Buffer Full (Red5)|4 bytes|クライアントに割り当てられているメッセージストリーム ID.<br>サーバ側がバッファを送信する準備が出来たことをクライアント側に伝えるためにこのイベントを送信する.|
+!!!include(user-control-events-red5-obs.md)!!!
 
 ##### Metadata の構造
 
 Metadata は公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
-> An aggregate message is a single message that contains a series of RTMP sub-messages.
-
-* 集約(Metadata)メッセージは一連の RTMP サブメッセージを含む単一のメッセージである.
-
-そしてそのサブメッセージの内訳は以下のように定義されている.
-
-1. ヘッダ
-2. メッセージデータ
-3. バックポインタ
+!!!include(metadata-official.md)!!!
 
 一方で, 各種 OSS 製品では以下のようにデコードしている.
 
-FFmpeg/rtmpproto.c#L2347-L2395[^FFmpeg/rtmpproto.c#L2347-L2395]
-
-```c
-static int handle_metadata(RTMPContext *rt, RTMPPacket *pkt)
-{
-    int ret, old_flv_size, type;
-    const uint8_t *next;
-    uint8_t *p;
-    uint32_t size;
-    uint32_t ts, cts, pts = 0;
-
-    old_flv_size = update_offset(rt, pkt->size);
-
-    if ((ret = av_reallocp(&rt->flv_data, rt->flv_size)) < 0) {
-        rt->flv_size = rt->flv_off = 0;
-        return ret;
-    }
-
-    next = pkt->data;
-    p    = rt->flv_data + old_flv_size;
-
-    /* copy data while rewriting timestamps */
-    ts = pkt->timestamp;
-
-    while (next - pkt->data < pkt->size - RTMP_HEADER) {
-        type = bytestream_get_byte(&next);
-        size = bytestream_get_be24(&next);
-        cts  = bytestream_get_be24(&next);
-        cts |= bytestream_get_byte(&next) << 24;
-        if (!pts)
-            pts = cts;
-        ts += cts - pts;
-        pts = cts;
-        if (size + 3 + 4 > pkt->data + pkt->size - next)
-            break;
-        bytestream_put_byte(&p, type);
-        bytestream_put_be24(&p, size);
-        bytestream_put_be24(&p, ts);
-        bytestream_put_byte(&p, ts >> 24);
-        memcpy(p, next, size + 3 + 4);
-        p    += size + 3;
-        bytestream_put_be32(&p, size + RTMP_HEADER);
-        next += size + 3 + 4;
-    }
-    if (p != rt->flv_data + rt->flv_size) {
-        av_log(NULL, AV_LOG_WARNING, "Incomplete flv packets in "
-                                     "RTMP_PT_METADATA packet\n");
-        rt->flv_size = p - rt->flv_data;
-    }
-
-    return 0;
-}
-```
-
-obs-studio/rtmp.c#L1490-L1523[^obs-studio/rtmp.c#L1490-L1523]
-obs-studio/rtmp.c#L4972-L5059[^obs-studio/rtmp.c#L4972-L5059]
-
-```c
-case RTMP_PACKET_TYPE_FLASH_VIDEO:
-{
-    /* go through FLV packets and handle metadata packets */
-    unsigned int pos = 0;
-    uint32_t nTimeStamp = packet->m_nTimeStamp;
-
-    while (pos + 11 < packet->m_nBodySize)
-    {
-        uint32_t dataSize = AMF_DecodeInt24(packet->m_body + pos + 1);	/* size without header (11) and prevTagSize (4) */
-
-        if (pos + 11 + dataSize + 4 > packet->m_nBodySize)
-        {
-            RTMP_Log(RTMP_LOGWARNING, "Stream corrupt?!");
-            break;
-        }
-        if (packet->m_body[pos] == 0x12)
-        {
-            HandleMetadata(r, packet->m_body + pos + 11, dataSize);
-        }
-        else if (packet->m_body[pos] == 8 || packet->m_body[pos] == 9)
-        {
-            nTimeStamp = AMF_DecodeInt24(packet->m_body + pos + 4);
-            nTimeStamp |= (packet->m_body[pos + 7] << 24);
-        }
-        pos += (11 + dataSize + 4);
-    }
-    if (!r->m_pausing)
-        r->m_mediaStamp = nTimeStamp;
-
-    /* FLV tag(s) */
-    /*RTMP_Log(RTMP_LOGDEBUG, "%s, received: FLV tag(s) %lu bytes", __FUNCTION__, packet.m_nBodySize); */
-    bHasMediaPacket = 1;
-    break;
-}
-
-// 中略
-
-if (packet.m_packetType == RTMP_PACKET_TYPE_FLASH_VIDEO)
-{
-    /* basically we have to find the keyframe with the
-     * correct TS being nResumeTS
-     */
-    unsigned int pos = 0;
-    uint32_t ts = 0;
-
-    while (pos + 11 < nPacketLen)
-    {
-        /* size without header (11) and prevTagSize (4) */
-        uint32_t dataSize =
-            AMF_DecodeInt24(packetBody + pos + 1);
-        ts = AMF_DecodeInt24(packetBody + pos + 4);
-        ts |= (packetBody[pos + 7] << 24);
-
-#ifdef _DEBUG
-        RTMP_Log(RTMP_LOGDEBUG,
-                 "keyframe search: FLV Packet: type %02X, dataSize: %d, timeStamp: %d ms",
-                 packetBody[pos], dataSize, ts);
-#endif
-        /* ok, is it a keyframe?:
-         * well doesn't work for audio!
-         */
-        if (packetBody[pos /*6928, test 0 */ ] ==
-                r->m_read.initialFrameType
-                /* && (packetBody[11]&0xf0) == 0x10 */ )
-        {
-            if (ts == r->m_read.nResumeTS)
-            {
-                RTMP_Log(RTMP_LOGDEBUG,
-                         "Found keyframe with resume-keyframe timestamp!");
-                if (r->m_read.nInitialFrameSize != dataSize
-                        || memcmp(r->m_read.initialFrame,
-                                  packetBody + pos + 11,
-                                  r->m_read.
-                                  nInitialFrameSize) != 0)
-                {
-                    RTMP_Log(RTMP_LOGERROR,
-                             "FLV Stream: Keyframe doesn't match!");
-                    ret = RTMP_READ_ERROR;
-                    break;
-                }
-                r->m_read.flags |= RTMP_READ_GOTFLVK;
-
-                /* skip this packet?
-                 * check whether skippable:
-                 */
-                if (pos + 11 + dataSize + 4 > nPacketLen)
-                {
-                    RTMP_Log(RTMP_LOGWARNING,
-                             "Non skipable packet since it doesn't end with chunk, stream corrupt!");
-                    ret = RTMP_READ_ERROR;
-                    break;
-                }
-                packetBody += (pos + 11 + dataSize + 4);
-                nPacketLen -= (pos + 11 + dataSize + 4);
-
-                goto stopKeyframeSearch;
-
-            }
-            else if (r->m_read.nResumeTS < ts)
-            {
-                /* the timestamp ts will only increase with
-                 * further packets, wait for seek
-                 */
-                goto stopKeyframeSearch;
-            }
-        }
-        pos += (11 + dataSize + 4);
-    }
-    if (ts < r->m_read.nResumeTS)
-    {
-        RTMP_Log(RTMP_LOGERROR,
-                 "First packet does not contain keyframe, all "
-                 "timestamps are smaller than the keyframe "
-                 "timestamp; probably the resume seek failed?");
-    }
-stopKeyframeSearch:
-    ;
-    if (!(r->m_read.flags & RTMP_READ_GOTFLVK))
-    {
-        RTMP_Log(RTMP_LOGERROR,
-                 "Couldn't find the seeked keyframe in this chunk!");
-        ret = RTMP_READ_IGNORE;
-        break;
-    }
-}
-```
-
-red5-server-common/Aggregate.java#L108-L198[^red5-server-common/Aggregate.java#L108-L198]
-
-```java
-/**
- * Breaks-up the aggregate into its individual parts and returns them as a list. The parts are returned based on the ordering of the aggregate itself.
- * 
- * @return list of IRTMPEvent objects
- */
-public LinkedList<IRTMPEvent> getParts() {
-    LinkedList<IRTMPEvent> parts = new LinkedList<IRTMPEvent>();
-    log.trace("Aggregate data length: {}", data.limit());
-    int position = data.position();
-    do {
-        try {
-            // read the header
-            //log.trace("Hex: {}", data.getHexDump());
-            byte subType = data.get();
-            // when we run into subtype 0 break out of here
-            if (subType == 0) {
-                log.debug("Subtype 0 encountered within this aggregate, processing with exit");
-                break;
-            }
-            int size = IOUtils.readUnsignedMediumInt(data);
-            log.debug("Data subtype: {} size: {}", subType, size);
-            // TODO ensure the data contains all the bytes to support the specified size
-            int timestamp = IOUtils.readExtendedMediumInt(data);
-            /*timestamp = ntohap((GETIBPOINTER(buffer) + 4)); 0x12345678 == 34 56 78 12*/
-            int streamId = IOUtils.readUnsignedMediumInt(data);
-            log.debug("Data timestamp: {} stream id: {}", timestamp, streamId);
-            Header partHeader = new Header();
-            partHeader.setChannelId(header.getChannelId());
-            partHeader.setDataType(subType);
-            partHeader.setSize(size);
-            // use the stream id from the aggregate's header
-            partHeader.setStreamId(header.getStreamId());
-            partHeader.setTimer(timestamp);
-            // timer delta == time stamp - timer base
-            // the back pointer may be used to verify the size of the individual part
-            // it will be equal to the data size + header size
-            int backPointer = 0;
-            switch (subType) {
-                case TYPE_AUDIO_DATA:
-                    AudioData audio = new AudioData(data.getSlice(size));
-                    audio.setTimestamp(timestamp);
-                    audio.setHeader(partHeader);
-                    log.debug("Audio header: {}", audio.getHeader());
-                    parts.add(audio);
-                    //log.trace("Hex: {}", data.getHexDump());
-                    // ensure 4 bytes left to read an int
-                    if (data.position() < data.limit() - 4) {
-                        backPointer = data.getInt();
-                        //log.trace("Back pointer: {}", backPointer);
-                        if (backPointer != (size + 11)) {
-                            log.debug("Data size ({}) and back pointer ({}) did not match", size, backPointer);
-                        }
-                    }
-                    break;
-                case TYPE_VIDEO_DATA:
-                    VideoData video = new VideoData(data.getSlice(size));
-                    video.setTimestamp(timestamp);
-                    video.setHeader(partHeader);
-                    log.debug("Video header: {}", video.getHeader());
-                    parts.add(video);
-                    //log.trace("Hex: {}", data.getHexDump());
-                    // ensure 4 bytes left to read an int
-                    if (data.position() < data.limit() - 4) {
-                        backPointer = data.getInt();
-                        //log.trace("Back pointer: {}", backPointer);
-                        if (backPointer != (size + 11)) {
-                            log.debug("Data size ({}) and back pointer ({}) did not match", size, backPointer);
-                        }
-                    }
-                    break;
-                default:
-                    log.debug("Non-A/V subtype: {}", subType);
-                    Unknown unk = new Unknown(subType, data.getSlice(size));
-                    unk.setTimestamp(timestamp);
-                    unk.setHeader(partHeader);
-                    parts.add(unk);
-                    // ensure 4 bytes left to read an int
-                    if (data.position() < data.limit() - 4) {
-                        backPointer = data.getInt();
-                    }
-            }
-            position = data.position();
-        } catch (Exception e) {
-            log.error("Exception decoding aggregate parts", e);
-            break;
-        }
-        log.trace("Data position: {}", position);
-    } while (position < data.limit());
-    log.trace("Aggregate processing complete, {} parts extracted", parts.size());
-    return parts;
-}
-```
-
-上記の各実装において, `type/subType`, `size/dataSize` および `cts/nTimestamp/timestamp` として表れているフィールドは公式ドキュメント[^RTMP-Specification-1.0]中の以下の部分で定義されている.
-
-> 6.1.1.  Message Header
->
-> The message header contains the following:
->
-> Message Type: One byte field to represent the message type. A range of type IDs (1-6) are reserved for protocol control messages.  
-> Length: Three-byte field that represents the size of the payload in bytes. It is set in big-endian format.  
-> Timestamp: Four-byte field that contains a timestamp of the message. The 4 bytes are packed in the big-endian order.  
-> Message Stream Id: Three-byte field that identifies the stream of the message. These bytes are set in big-endian format.
-
-1. メッセージの種類 (ID, 1 byte)
-
-* 1 - 6 はプロトコル制御メッセージ用に予約されている.
-
-2. 長さ(3 bytes)
-
-* Big Endianである.
-
-3. タイムスタンプ (4 bytes)
-
-* Big Endianである. と書かれているが, 上記の各実装では以下のデコードを行っている:
-  * チャンク中の最下位の 1 byte を実際のタイムスタンプの最上位 1 byte とする.
-  * 実際のタイムスタンプからチャンクにエンコードする場合は, 上記の逆の操作を行う.
-
-4. メッセージストリーム ID (3 bytes)
-
-* Big Endian である.
-
-メッセージストリーム ID について:
-
-> The message stream ID of the aggregate message overrides the message stream IDs of the sub-messages inside the aggregate.
-
-* 集約メッセージのチャンクに割り当てられているメッセージストリーム ID はサブメッセージに割り当てられているメッセージストリーム ID を無視する.
-
-タイムスタンプについて:
-
-> The difference between the timestamps of the aggregate message and the first sub-message is the offset used to renormalize the timestamps of the sub-messages to the stream timescale.
-> The offset is added to each sub-message’s timestamp to arrive at the normalized stream time.
-> The timestamp of the first sub-message SHOULD be the same as the timestamp of the aggregate message, so the offset SHOULD be zero.
-
-* サブメッセージのタイムスタンプはチャンクメッセージヘッダに入力されたタイムスタンプを基準にしたオフセットである.
-* チャンクメッセージヘッダのタイムスタンプに当該フィールドの値を加算することで実際のタイムスタンプを求めることができる.
-* 最初のサブメッセージのタイムスタンプはチャンクメッセージヘッダのそれと同一で**あるべき**なので, オフセットは 0 で**あるべき**である.
-
-そして, バックポインタについては公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
-
-> The back pointer contains the size of the previous message including its header.
-> It is included to match the format of FLV file and is used for backward seek.
-
-* サブヘッダを含む直前のサブメッセージのサイズである.
-* FLV ファイルのフォーマットに一致しており, 逆シークに使われる.
-
-当該サブヘッダに入力するメッセージの種類は上記の各実装を参考にすると以下のようである.
-
-|ID|サブメッセージの種類|入力内容|
-|-|-|-|
-|8|Audio|音声データ.<br>生のバイト列である.|
-|9|Video|映像データ.<br>〃|
-|18|Data(Official),<br>Notify(FFmpeg, Red5),<br>Info(OBS)|サブメッセージのメタデータ.<br>AMF0 がサブメッセージに適用されている.|
-
-上記の FFmpeg および OBS の実装に着目すると, いずれもメッセージストリーム ID に相当するフィールドを意図的にデコードして**いない**ことを確認できる. 同様に, バックポインタの値もデコードして**いない**ことを確認できる.  
-ところで, 上記ソースコード中に `1`, `3`, `4`, `7` および `11` といったマジックナンバーが散見される. これらは以下の計算に用いられている.
-
-FFmpeg:
-
-* 3: メッセージストリーム ID のサイズ. デコードはしないがそのままコピーして使い回すため, コピーするサイズをその分だけ加算している.
-* 4: バックポインタのサイズ. 受信したチャンクに入力されている分に関してはデコードしないが, 送信するチャンクには入力が必須なため, サイズをその分だけ加算している.
-* RTMP\_HEADER: 11. つまり Metadata チャンクに入力されているサブヘッダ全体のサイズである.
-
-OBS:
-
-* 1: サブメッセージの種類 (ID). OBS ではメッセージストリーム ID を読み飛ばしている箇所があるため, その分だけオフセットしている.
-* 4: タイムスタンプの開始位置. サブメッセージの種類を表す ID (1 byte) と サブメッセージの長さ (3 bytes) を合計した分だけオフセットしている.
-* 7: タイムスタンプの **4 bytes目**の位置. タイムスタンプの開始位置にタイムスタンプの上位 3 bytes のサイズをさらに合計した分だけオフセットしている.
-* 11: Metadata チャンクに入力されているサブヘッダのサイズ.
+!!!include(metadata-oss.md)!!!
 
 #### Invoke(connect)
 
@@ -1152,83 +715,31 @@ Invoke(connect) およびその応答メッセージは公式ドキュメント[
 
 要求メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|connect|
-|トランザクション ID|Number|1|
-|コマンドオブジェクト|Object|名前と値のペア.<br>クライアント側のアプリケーションを接続するために必要な情報が書き込まれている.|
-|追加のユーザ引数|Object|コマンドオブジェクトの他に必要な情報がある場合に入力する.|
+!!!include(invoke-connect-request.md)!!!
 
 応答メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|\_result(アプリケーションを接続できる時)<br>もしくは<br>\_error(アプリケーションを接続できない時)|
-|トランザクション ID|Number|1|
-|プロパティ|Object|名前と値のペア.<br>サーバ側のアプリケーションを接続するために必要な情報を入力する.|
-|インフォメーション|Object|名前と値のペア.<br>サーバ側の応答の状態を表すために必要な情報を入力する.|
+!!!include(invoke-connect-response.md)!!!
 
 コマンドオブジェクト:
 
-|プロパティ|データ型|入力内容|
-|-|-|-|
-|app|String|クライアントが接続しているサーバアプリケーションの名前.<br>多くの場合において, 起動時に渡される URL から参照する.<br>そのパターンは次の通りである: protocol://server[:port][/app][/playpath]|
-|type|String|nonprivate.<br>公式ドキュメントには定義されていないが FFmpeg や OBS で入力されている.|
-|flashVer|String|Flash Player のバージョン.<br>入力側と出力側で入力内容が違う.<br>出力側の場合: FMLE/3.0 (compatible; &lt;クライアント側のツールやライブラリの識別情報&gt;)<br>入力側の場合: &lt;OSの識別名&gt; &lt;Flash Playerのバージョン(カンマ区切り)&gt;|
-|swfUrl|String|アプリケーション接続に必要な SWF ファイルの URL.<br>ツールによってデフォルトの入力内容に違いがある. 例えば:<br>FFmpeg の場合: 入力なし.<br>OBS の場合: tcUrl と同じ値.|
-|tcUrl|String|接続先サーバの URL.<br>protocol://server[:port][/app] のフォーマットに従って入力する.<br>デフォルトは起動時にコマンドラインで渡された URL を参照する.|
-|fpad|Boolean|プロキシが使われているなら true を入力する.|
-|capabilities|Number|15. 公式ドキュメントには定義されていないが FFmpeg や OBS では入力されている.|
-|audioCodecs|Number|クライアントがサポートする音声コーデックの情報.|
-|videoCodecs|Number|クライアントがサポートする映像コーデックの情報.|
-|videoFunction|Number|クライアントがサポートする特別なビデオ機能の情報.|
-|pageUrl|String|SWF ファイルがロードされた Web ページの URL.|
-|objectEncoding|Number|AMF のエンコーディングメソッド.|
+!!!include(command-object.md)!!!
 
 サポートしている音声コーデック:
 
-|ビットフラグ|コーデック|備考|
-|-|-|-|
-|0x0001|Raw| |
-|0x0002|ADPCM| |
-|0x0004|MP3| |
-|0x0008|Intel|使われていない.|
-|0x0010|Unused|使われていない.|
-|0x0020|Nerry8|NellyMoser at 8 kHz.|
-|0x0040|Nerry|NellyMoser at 5, 11, 22 and 44 kHz.|
-|0x0080|G711A|Adobe Media Server 限定のコーデックである.|
-|0x0100|G711U|同上.|
-|0x0200|NELLY16|NellyMouser at 16 kHz.|
-|0x0400|AAC| |
-|0x0800|Speex| |
-|0xFFFF|上記のすべて| |
+!!!include(command-object-audio-codecs.md)!!!
 
 サポートしている映像コーデック:
 
-|ビットフラグ|コーデック|備考|
-|-|-|-|
-|0x0001|Unused|廃れている.|
-|0x0002|JPEG|廃れている.|
-|0x0004|Sorenson| |
-|0x0008|Homebrew| |
-|0x0010|On2VP6|Flash 8 以降にサポートしている.|
-|0x0020|On2VP6 with alpha channel|同上.|
-|0x0040|Homebrew v2| |
-|0x0080|H264| |
-|0x00FF|上記のすべて| |
+!!!include(command-object-video-codecs.md)!!!
 
 サポートしているビデオ機能:
 
-|ビットフラグ|機能|備考|
-|-|-|-|
-|1|Seek|クライアント側はフレーム精度の高いシークを実行できる.|
+!!!include(command-object-video-function.md)!!!
 
 サポートしているエンコーディングメソッド:
 
-|ビットフラグ|エンコーディング|備考|
-|-|-|-|
-|0|AMF0|Flash 6 以降にサポートしている.|
-|3|AMF3|Flash 9 (ActionScript 3) 以降にサポートしている.|
+!!!include(command-object-object-encoding.md)!!!
 
 応答メッセージのプロパティフィールドおよびインフォメーションフィールドには公式に定められた仕様が存在しない. よって, 各種 OSS 製品の実装内容から特定できる範囲で紹介する.
 
@@ -1273,33 +784,17 @@ if (ret < 0)
 
 プロパティ:
 
-|プロパティ|データ型|入力内容|
-|-|-|-|
-|fmsVer|String|FMS/&lt;Adobe Media Serverのバージョン(カンマ区切り)&gt;|
-|capabilities|Number|31(暫定)|
+!!!include(invoke-connect-response-properties.md)!!!
 
 インフォメーション:
 
-|プロパティ|データ型|入力内容|
-|-|-|-|
-|level|String|status|
-|code|String|NetConnection.Connect.Success|
-|description|String|Connection succeeded.|
-|objectEncoding|Number|0|
+!!!include(invoke-connect-response-informations.md)!!!
 
 そして, 当該チャンクの送受信の手順は公式ドキュメント[^RTMP-Specification-1.0]では以下のように定義されている.
 
 <div id="rtmp-invoke-connect-sequences-official">
 
-@startuml
-== RTMP ハンドシェイクが完了した. ==
-Client -> Server: Invoke(connect)
-Server -> Client: Window Acknowledgement Size / Server BandWidth
-Server -> Client: Set Peer BandWidth / Client BandWidth
-Client -> Server: Window Acknowledgement Size / Server BandWidth
-Server -> Client: User Control(Stream Begin)
-Server -> Client: Invoke(_result)
-@enduml
+!!!include(invoke-connect-sequences-official.md)!!!
 
 </div>
 
@@ -1434,16 +929,7 @@ ff_rtmp_packet_destroy(&pkt);
 
 <div id="rtmp-invoke-connect-sequences-ffmpeg">
 
-@startuml
-== ハンドシェイクが完了した. ==
-クライアント -> サーバ: Invoke(connect)
-サーバ -> クライアント: Window Acknowledgement Size / Server BandWidth
-サーバ -> クライアント: Set Peer BandWidth / Client BandWidth
-サーバ -> クライアント: User Control(Stream Begin)
-サーバ -> クライアント: Chunk Size
-サーバ -> クライアント: Invoke(_result)
-サーバ -> クライアント: Invoke(onBWDone)
-@enduml
+!!!include(invoke-connect-sequences-ffmpeg.md)!!!
 
 </div>
 
@@ -1493,16 +979,7 @@ obs-studio/rtmp.c#L3857-L4049[^obs-studio/rtmp.c#L3857-L4049]
 
 <div id="rtmp-invoke-connect-sequences-fixed">
 
-@startuml
-== ハンドシェイクが完了した. ==
-クライアント -> サーバ: Invoke(connect)
-サーバ -> クライアント: Invoke(_result)
-サーバ -> クライアント: Window Acknowledgement Size / Server BandWidth
-サーバ -> クライアント: Set Peer BandWidth / Client BandWidth
-サーバ -> クライアント: User Control(Stream Begin)
-サーバ -> クライアント: Chunk Size
-サーバ -> クライアント: Invoke(_result)
-@enduml
+!!!include(invoke-connect-sequences-fixed.md)!!!
 
 </div>
 
@@ -1612,20 +1089,11 @@ SendReleaseStream(RTMP *r, int streamIdx)
 
 要求メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|releaseStream|
-|トランザクション ID|Number|2.<br>Invoke(connect) に割り振られた値より 1 多い値を割り振るようだ.|
-|Null|Null|AMF における Null.<br>コマンドオブジェクトなどを入力しない場合はトランザクション ID の直後にこの値を 1 つ入力するようだ.|
-|**playpath**|String|mp4やmp3などのファイル名. mp4: などのプリフィックスを付けることができる.<br>起動時に渡される URL から参照する.<br>そのパターンは次の通りである: protocol://server[:port][/app][/playpath]|
+!!!include(invoke-release-stream-request.md)!!!
 
 応答メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|\_result<br>もしくは<br>\_error|
-|トランザクション ID|Number|2.<br>Invoke(releaseStream) チャンクに入力されているものと同じものを使用する.|
-|Null|Null|AMF における Null.<br>プロパティなどを入力しない場合はこの値を 1 つ入力するようだ.|
+!!!include(invoke-release-stream-response.md)!!!
 
 2. Invoke(FCPublish)
 
@@ -1707,18 +1175,11 @@ SendFCPublish(RTMP *r, int streamIdx)
 
 要求メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|FCPublish|
-|トランザクション ID|Number|3.<br>Invoke(releaseStream) に割り振られた値より 1 多い値を割り振るようだ.|
-|Null|Null|AMF における Null.<br>コマンドオブジェクトなどを入力しない場合はトランザクション ID の直後にこの値を 1 つ入力するようだ.|
-|playpath|String|Invoke(releaseStream) に入力されたものと同じ値を入力する.|
+!!!include(invoke-fcpublish-request.md)!!!
 
 応答メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|onFCPublish|
+!!!include(invoke-fcpublish-response.md)!!!
 
 3. Invoke(createStream)
 
@@ -1726,20 +1187,11 @@ Invoke(createStream) チャンクは公式ドキュメント[^RTMP-Specification
 
 要求メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|createStream|
-|トランザクション ID|Number|コマンドのトランザクション ID.|
-|コマンドオブジェクト|Object<br>または<br>Null|当該コマンドに設定する情報がある場合は Invoke(connect) と同じフォーマットのコマンドオブジェクトを入力する.<br>そうでなければ AMF における Null を入力する.|
+!!!include(invoke-create-stream-request-official.md)!!!
 
 応答メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|\_result<br>または<br>\_error|
-|トランザクション ID.|Number|応答メッセージが属するコマンドの ID.|
-|コマンドオブジェクト|Object<br>または<br>Null|当該応答メッセージに設定する情報がある場合は Invoke(createStream) と同じフォーマットのコマンドオブジェクトを入力する.<br>そうでなければ AMF における Null を入力する.|
-|**メッセージストリーム ID**|Number|メッセージストリーム ID か**エラー情報が入力されたインフォメーションオブジェクト**を入力する.|
+!!!include(invoke-create-stream-response-official.md)!!!
 
 一方で, FFmpeg および OBS では以下の構造であるようだ.
 
@@ -1825,20 +1277,11 @@ RTMP_SendCreateStream(RTMP *r)
 
 要求メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|createStream|
-|トランザクション ID|Number|4.<br>Invoke(FCPublish) に割り振られた値より 1 多い値を割り振るようだ.|
-|Null|Null|AMF における Null.|
+!!!include(invoke-create-stream-request-ffmpeg-obs.md)!!!
 
 応答メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|\_result<br>または<br>\_error|
-|トランザクション ID|Number|4.<br>Invoke(createStream) チャンクに入力されている値と同じ値を入力するようだ.|
-|Null|Null|AMF における Null.|
-|**メッセージストリーム ID**|Number|サーバ側がクライアント側に割り振るメッセージストリーム ID.|
+!!!include(invoke-create-stream-response-ffmpeg-obs.md)!!!
 
 Invoke(releaseStream), Invoke(FCPublish) および Invoke(createStream) の 3 つのチャンクへの応答をすべて終えると, クライアント側はサーバ側に Invoke(publish) チャンクを送信する.
 
@@ -1848,30 +1291,11 @@ Invoke(publish) チャンクは公式ドキュメント[^RTMP-Specification-1.0]
 
 要求メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|publsh|
-|トランザクション ID|Number|0|
-|コマンドオブジェクト|Null|publish コマンドにコマンドオブジェクトは存在しないので AMF における Null を入力する.|
-|発行名|String|ストリームの発行に使用される名前.|
-|発行の種類|String|live, record, append のいずれか.  \
-||| * record: ストリームが発行され, データが新しいファイルに記録される. ファイルはサーバーアプリケーションを含むディレクトリ内のサブディレクトリのサーバーに保存される. ファイルが既に存在する場合, 上書きされる.  \
-||| * append: ストリームが発行され、データがファイルに追加される. ファイルが見つからなかった場合, 作成される.  \
-||| * live: ライブデータはファイルに記録せずに発行される.|
+!!!include(invoke-publish-request-official.md)!!!
 
 応答メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|onStatus|
-|トランザクション ID|Number|0|
-|コマンドオブジェクト|Null|onStatusメッセージにコマンドオブジェクトは存在しないので AMF における Null を入力する.|
-|インフォメーションオブジェクト|Object|少なくとも以下の 3 つのプロパティを持つオブジェクト:  \
-||| * level: warning, status, error のいずれか.  \
-||| * code: メッセージのステータスコード. 例えば NetStream.Play.Start.  \
-||| * description: メッセージの人間が読める記述.  \
-|||  \
-|||インフォメーションオブジェクトは code に応じて他のプロパティを含め**てもよい**.|
+!!!include(invoke-publish-response-official.md)!!!
 
 一方で, FFmpeg および OBS では以下の構造であるようだ.
 
@@ -1989,26 +1413,11 @@ SendPublish(RTMP *r, int streamIdx)
 
 要求メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|publish|
-|トランザクション ID|Number|5.<br>Invoke(createStream) に割り振られた値より 1 多い値を割り振るようだ.|
-|コマンドオブジェクト|Null|AMF における Null.|
-|発行名|String|playpath と同じ値.|
-|発行の種類|String|live|
+!!!include(invoke-publish-request-ffmpeg-obs.md)!!!
 
 応答メッセージ:
 
-|フィールド名|データ型|入力内容|
-|-|-|-|
-|コマンド名|String|onStatus|
-|トランザクション ID|Number|0|
-|コマンドオブジェクト|Null|AMF における Null.|
-|インフォメーションオブジェクト|Object|以下の名前と値のペア.  \
-||| * level: status  \
-||| * code: 何らかのステータスコード. FFmpeg/rtmpproto.c#L1965-L1973[^FFmpeg/rtmpproto.c#L1965-L1973] より, 今回は NetStream.Publish.Start が入力されている.  \
-||| * description: "**playpath** is now published".  \
-||| * details: playpath と同じ値.|
+!!!include(invoke-publish-response-ffmpeg-obs.md)!!!
 
 Invoke(publish) チャンクの現在の仕様は, 要求メッセージのトランザクション ID が 0 でないことを除き RTMP 1.0 当時と同じようだ.
 
@@ -2016,17 +1425,7 @@ Invoke(publish) チャンクの現在の仕様は, 要求メッセージのト�
 
 <div id="rtmp-invoke-publish-sequences-official">
 
-@startuml
-== Invoke(createStream) への応答が完了した. ==
-クライアント -> サーバ: Invoke(publish)
-サーバ -> クライアント: User Control(Stream Begin)
-クライアント -> サーバ: Metadata
-クライアント -> サーバ: Audio
-クライアント -> サーバ: Chunk Size
-サーバ -> クライアント: Invoke(onStatus)
-クライアント -> サーバ ++ : Video
-== ストリームの送信が完了するまで. ==
-@enduml
+!!!include(invoke-publish-sequences-official.md)!!!
 
 </div>
 
@@ -2056,17 +1455,7 @@ if (!strcmp(command, "publish")) {
 
 <div id="rtmp-invoke-publish-sequences-ffmpeg">
 
-@startuml
-== Invoke(createStream) への応答が完了した. ==
-クライアント -> サーバ: Invoke(publish)
-サーバ -> クライアント: User Control(Stream Begin)
-サーバ -> クライアント: Invoke(onStatus)
-== 映像/音声の送受信を開始する. ==
-クライアント -> サーバ ++ : Metadata
-クライアント -> サーバ: Audio
-クライアント -> サーバ: Video
-== 映像/音声の送信が完了するまで. ==
-@enduml
+!!!include(invoke-publish-sequences-ffmpeg.md)!!!
 
 </div>
 
@@ -2084,36 +1473,7 @@ if (!strcmp(command, "publish")) {
 
 <div id="rtmp-connection-sequences-current">
 
-@startuml
-== TCP 接続に成功した. ==
-クライアント -> サーバ: C0+C1
-サーバ -> クライアント: S0+S1+S2
-クライアント -> サーバ: C2
-== RTMP ハンドシェイクが完了した. ==
-クライアント -> サーバ: Invoke(connect)
-サーバ -> クライアント: Invoke(_result)
-サーバ -> クライアント: Window Acknowledgement Size / Server BandWidth
-サーバ -> クライアント: Set Peer BandWidth / Client BandWidth
-サーバ -> クライアント: User Control(Stream Begin)
-サーバ -> クライアント: Chunk Size
-サーバ -> クライアント: Invoke(_result)
-== アプリケーション接続が完了した. ==
-クライアント -> サーバ: Invoke(releaseStream)
-クライアント -> サーバ: Invoke(FCPublish)
-クライアント -> サーバ: Invoke(createStream)
-サーバ -> クライアント: Invoke(_result)
-サーバ -> クライアント: Invoke(onFCPublish)
-サーバ -> クライアント: Invoke(_result)
-== メッセージストリーム ID の付番が完了した. ==
-クライアント -> サーバ: Invoke(publish)
-サーバ -> クライアント: User Control(Stream Begin)
-サーバ -> クライアント: Invoke(onStatus)
-== 映像/音声の送受信を開始する. ==
-クライアント -> サーバ ++ : Metadata
-クライアント -> サーバ: Audio
-クライアント -> サーバ: Video
-== 映像/音声の送信が完了するまで. ==
-@enduml
+!!!include(connection-sequences-current.md)!!!
 
 </div>
 
@@ -2151,108 +1511,13 @@ Invoke, Metadata および Shared Object の 3 種のチャンクデータには
 
 * AMF0[^AMF0-File-Format-Specification]
 
-|ID|データ型|サイズ|入力内容|
-|-|-|-|-|
-|0|Number|8 bytes|8 bytes 浮動小数点数のバイナリ表記.<br>受信時は 8 bytes のバイト列なので, それを浮動小数点数に変換する工夫が必要である.|
-|1|Boolean|1 byte|1 byte 整数.<br>0 を false, それ以外(一般的には 1)を true として扱う.|
-|2|String|2 bytes<br>+<br>可変(最大 (2^16^ - 1) bytes)|UTF-8 の文字列.<br>最初の 2 bytes には続く文字列の長さを入力する.|
-|3|Anonymous Object|可変|名前と値(どちらも AMF0 でエンコードされたもの)のペア.|
-|4|Movieclip| |サポートされておらず未来の使用のために予約されている.|
-|5|Null|0 bytes|なし.<br>ID のみを入力する.|
-|6|Undefined|0 bytes|なし.<br>ID のみを入力する.|
-|7|Reference|2 bytes|符号なし整数.<br>以下の 4 つのデータ型は複合することができる.  \
-|||| * Anonymous Object  \
-|||| * Typed Object  \
-|||| * Strict Array \
-|||| * ECMA Array  \
-||||  \
-||||複合オブジェクトの同じ実体が 1 つのオブジェクトグラフとして複数回現れるなら, それは参照として送られなければならない.<br>Reference 型は直列化されたオブジェクトのテーブル内でのインデックスを指す 2 bytes の符号なし整数である.<br>0 オリジンである.|
-|8|ECMA Array|4 bytes<br>+<br>可変(最大 (2^32^ - 1) 要素)|要素の総数(4 bytes)とその数と等しい数の名前と値(どちらも AMF0 でエンコードされたもの)のペア.<br>ECMA 配列もしくは連想配列である.<br>順序やすべてのインデックスはすべて文字列のキーとして扱われる.<br>シリアライズの観点で当該データ型は Anonymous Object 型と類似している.|
-|9|Object End|0 byte|なし.<br>ID のみを入力する.<br>以下の 4 つのデータ型はそれ自体の終わりの印として当該データ型の ID をその末尾に入力する.  \
-|||| * Anonymous Object  \
-|||| * Typed Object  \
-|||| * ECMA Array  \
-|||| * Strict Array  \
-||||  \
-||||ただし, 当該データ型は **ID の直前の 2 bytes に空白(0x0000)が存在しており, 3 bytes の ID として評価しないと Number 型と混同してしまう**ので注意が必要である.|
-|10|Strict Array|4 bytes<br>+<br>可変(最大 (2^32^ - 1) 要素)|要素の総数(4 bytes)とその数と等しい数の(AMF0 でエンコードされた)値.<br>当該データ型は順序インデックスを持つ厳密な配列として扱う.|
-|11|Date|2 bytes<br>+<br>8 bytes|8 bytes 浮動小数点数のバイナリ表記.<br>UTC 基準のタイムスタンプを浮動小数点数として入力する.<br>最初の 2 bytes はタイムゾーンであるが, 予約済でありサポートされていないため 0 で埋めるべきである.|
-|12|Long String|4 bytes<br>+<br>可変(最大 (2^32^ - 1) bytes)|UTF-8 の文字列.<br>最初の 4 bytes には続く文字列の長さを入力する.|
-|13|Unsupported|0 byte|なし.<br>ID のみを入力する.<br>直列化できないデータ型に対して, 当該データ型の ID をそのデータ型の場所で使うことができる.|
-|14|RecordSet| |サポートされておらず未来の使用のために予約されている.|
-|15|XML|4 bytes<br>+<br>可変(最大 (2^32^ - 1) bytes)|UTF-8 の文字列.<br>ActionScript 1.0, 2.0 での XMLDocument および ActionScript 3.0 での flash.xml.XMLDocument が XML ドキュメントの DOM 表現を提供する.<br>ただし, 直列化ではドキュメントの文字列表現が使用される.|
-|16|Typed Object|可変|オブジェクトの名前(AMF0 での String)と名前と値(どちらも AMF0 でエンコードされたもの)のペア.|
-|17|AVM+|可変|**AMF3** の値.<br>AMF0 のフォーマットの中で AMF3 のデータを扱う時に入力する.|
+!!!include(amf0-types.md)!!!
 
 #### AMF3
 
 * AMF3[^AMF-File-Format-Spec]
 
-|ID|データ型|サイズ|入力内容|
-|-|-|-|-|
-|0|Undefined|0 byte|なし.<br>ID のみを入力する.<br>AVM 以外のエンドポイントでは未定義の概念がなく, 当該データ型をAMF での Null として扱う場合があることに注意が必要である.|
-|1|Null|0 byte|なし.<br>ID のみを入力する.|
-|2|False|0 byte|なし.<br>ID のみを入力する.<br>当該データ型は AMF3 における真偽値の**偽**として扱う.|
-|3|True|0 byte|なし.<br>ID のみを入力する.<br>当該データ型は AMF3 における真偽値の**真**として扱う.|
-|4|Integer|29 **bits**|[29 bits](#integer-型%2C-長さ%2C-要素の総数) の整数.<br>28 bits の範囲を上回ったり下回ったりする場合は, AMF3 の Double 型を用いてシリアライズされる.|
-|5|Double|8 bytes|8 bytes の浮動小数点数.<br>エンコード/デコードの方法は AMF0 の Number 型と同じである.|
-|6|String|29 bits<br>+<br>可変(最大 (2^28^ - 1) bytes)|UTF-8 の文字列.<br>最初の [29 bits](#integer-型%2C-長さ%2C-要素の総数) には参照値または文字列の長さを入力する.|
-|7|XMLDocument|29 bits<br>+<br>可変(最大 (2^28^ - 1) bytes)|UTF-8 でエンコードされた XML の文字列表現.<br>ActionScript 3 では新しい XML 型があるが, 古い XMLDocument 型が flash.xml.XMLDocument として言語に残されている.|
-|8|Date|29 bits<br>+<br>8 bytes|8 bytes の浮動小数点数のバイナリ表記.<br>UTC 基準のタイムスタンプを浮動小数点数として入力する.<br>最初の [29 bits](#integer-型%2C-長さ%2C-要素の総数) は AMF3 の Integer の値や String の長さと同じフォーマットであるが, 値(最下位ビットのフラグが 1)として入力する場合は残りの 28 bits には何も入力しない.|
-|9|Array|29 bits<br>+<br>可変|当該データ型には以下の 3 つのフォーマットがある.  \
-|||| * 参照であることを示す [29 bits](#integer-型%2C-長さ%2C-要素の総数) のフォーマット  \
-|||| * 要素の総数([29 bits](#integer-型%2C-長さ%2C-要素の総数))と, 空要素(1 -&gt; 値なし)のみの場合も含む ECMA (連想)配列<br>(名前と値(どちらも AMF3 でエンコードされたもの)のペア)  \
-|||| * 順序インデックスによる厳密な配列  \
-||||  \
-||||ECMA 配列フォーマットの場合は空要素を最後の要素として 1 つ置かなければならない.<br>また, 厳密な配列フォーマットは ECMA 配列フォーマットの末尾の空要素に続いて入力し, 要素の総数を ECMA 配列フォーマットの要素の総数に加える.|
-|10|Object|可変|当該データ型には以下の 6 つのフォーマットがある.  \
-|||| * 当該データ型の参照であることを示す [29 bits](#integer-型%2C-長さ%2C-要素の総数) のフォーマット  \
-|||| * トレイトのメンバのバイナリであることを示す([29 bits](#トレイトのバイナリ%2C-メンバの総数%2C-トレイトの参照)) + トレイトの特質とメンバのバイナリのペア  \
-|||| * トレイトの参照であることを示す [29 bits](#トレイトのバイナリ%2C-メンバの総数%2C-トレイトの参照) のフォーマット  \
-|||| * トレイトのメンバの総数([29 bits](#トレイトのバイナリ%2C-メンバの総数%2C-トレイトの参照)) + トレイトの特質と(AMF3 でエンコードされた)メンバ名のペア  \
-|||| * 1 つ以上のトレイトのメンバの(AMF3 でエンコードされた)値  \
-|||| * 1 つ以上の**動的な**メンバ<br>(名前と値(どちらも AMF3 でエンコードされたもの)のペア)  \
-||||  \
-||||ここで, トレイトの特質とは以下の 4 つの内 1 つを指す AMF3 の文字列である.  \
-|||| * anonymous<br>匿名のオブジェクト. 空文字("")を入力する.  \
-|||| * typed<br>名前付きのオブジェクト.  \
-|||| * dynamic<br>名前付き かつ 動的なメンバを持つオブジェクト.  \
-|||| * externalizable<br>**外部のプログラムが変換可能な**名前を持つオブジェクト.  \
-||||  \
-||||**Object 型としての**参照値もしくはトレイトのフォーマットの直後にメンバの実際の値が続き, 動的なメンバがあれば更にその直後にそれが続く形になる.|
-|11|XML|29 bits<br>+<br>可変(最大 (2^28^ - 1) bytes)|UTF-8 でエンコードされた XML の文字列表現.|
-|12|ByteArray|29 bits<br>+<br>可変(最大 (2^28^ - 1) bytes)|1 byte 符号なし整数の配列.|
-|13|Vector(Int)|29 bits<br>+<br>1 byte<br>+<br>可変(最大 (2^28^ - 1) 要素)|4 byte **符号付き** 整数の配列.<br>[29 bits](#integer-型%2C-長さ%2C-要素の総数) の直後の 1 byte は 1 ならその配列が固定長であることを, 0 なら可変長であることを意味する.|
-|14|Vector(UInt)|^^|4 byte **符号なし** 整数の配列.<br>〃|
-|15|Vector(Double)|^^|8 byte **浮動小数点数**(のバイナリ表記)の配列.<br>〃|
-|16|Vector(Object)|^^|**AMF3 のデータ型**の配列.<br>固定長かどうかのフラグの直後に AMF3 のデータ型の名前(AMF3 でエンコードされた文字列)を入力し, 以降にその名前で表現される AMF3 データの実体を入力する.<br>〃|
-|17|Dictionary|29 bits<br>+<br>1 byte<br>+<br>可変(最大 (2^28 - 1) 要素)|名前と値(どちらも AMF3 でエンコードされたもの)のペア.<br>Object 型との違いは**キーを任意の AMF3 データ型にできる**ことである.<br>[29 bits](#integer-型%2C-長さ%2C-要素の総数) の直後の 1 byte は 1 ならキーが弱参照であることを, 0 ならそうでないことを意味する.|
-
-なお, AMF3 における 29 bits のフィールドの内訳は以下の通りである.
-
-##### Integer 型, 長さ, 要素の総数
-
-* 最下位ビットが 0 の場合
-
-そのデータは参照であり, 残りの 28 bits は参照テーブルのインデックス(整数)を入力する.
-
-* 〃 1 の場合
-
-そのデータは実際の値であり, 残りの 28 bits には続く文字列の長さなどの整数を入力する.
-
-##### トレイトのバイナリ, メンバの総数, トレイトの参照
-
-* バイナリの場合
-
-最下位 **3 bits** に **0b111** を入力する. メンバの総数として常に 0 を入力することになるため, 残りの 26 bits には意味がない.
-
-* **トレイトの**参照の場合
-
-最下位 **2 bits** に **0b01** を入力する. 2 bit 目は **Object 型のトレイトが**参照で送られていることを意味する値(0)である. 残りの 27 bits にはトレイトの参照のインデックスを入力する.
-
-* メンバの総数の場合
-
-最下位 **4 bits** に **0bX011** を入力する. X は 1 なら動的なトレイトである(動的なメンバを持つ)ことを, 0 ならそうでないことを意味する. 残りの 25 bits にはトレイト名の直後に入力する**静的なメンバの**総数を入力する.
+!!!include(amf3-types.md)!!!
 
 ## 参考文献
 
