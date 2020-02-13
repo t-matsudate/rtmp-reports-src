@@ -24,7 +24,7 @@ export default {
   data() {
     return {
       author: 'T.Matsudate',
-      published: '2020-01-15',
+      published: '2020-02-13',
       title: 'ハンドシェイクと Invoke 処理の実装',
       description: 'RTMP サーバをどのように実装していけばよいかについて, 接続開始から映像/音声の送受信直前までの実装で説明していく.',
       source: ConnectionImplementation
