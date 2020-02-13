@@ -30,13 +30,15 @@ Bytes Read:
 
 公式ドキュメントでは Acknowledgement と呼んでいるが既存 OSS 製品では Bytes Read と呼ばれているため, ソースコードとの統一性のために本稿でも Bytes Read と呼ぶことにする.
 
-User Control:
+User Control(Official, FFmpeg, OBS) / Ping(Red5):
 
 * メッセージ種類 ID: 4
 * メッセージ長: 可変
 * 入力内容:
   * 主にメッセージストリーム ID だが, どの種類のイベントを入力するかによって具体的な内容に違いがある.
   * 詳細は [User Control Message の種類とデータ](#user-control-message-の種類とデータ)を参照.
+
+本稿では, 受信したデータと同様の性質のものをクライアントに返送するという性質から, 当該チャンクデータには Ping/Pong の名称を採用する.
 
 Window Acknowledgement Size (Official, FFmpeg) / Server Bandwidth (Red5, OBS):
 
