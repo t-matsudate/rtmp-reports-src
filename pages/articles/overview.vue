@@ -119,12 +119,6 @@ export default {
         }
       ]
     }
-  },
-  beforeRouteLeave(to, from, next) {
-    let submenu = document.getElementById('submenu')
-
-    submenu.outerHTML = null
-    next()
   }
 }
 </script>
