@@ -7,6 +7,7 @@
           <li><a href="https://t-matsudate.github.io">Back to Portfolio</a></li>
           <li><nuxt-link to="/">目次</nuxt-link></li>
           <li><nuxt-link to="/articles/overview">RTMP の概要</nuxt-link></li>
+          <li><nuxt-link to="/articles/connection-implementation">ハンドシェイクと Invoke 処理の実装</nuxt-link></li>
         </ul>
       </nav>
     </div>
