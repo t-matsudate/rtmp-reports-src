@@ -2,8 +2,8 @@
 
 @menu-background-color: hsl(0, 0%, 99%);
 @menu-text-color: hsl(0, 0%, 0%);
-@menu-current-article-color: .make-theme-color(mouse)[@theme-background];
-@menu-current-section-color: .make-theme-color(mouse)[@theme-background];
+@menu-current-title-text-color: .make-theme-color(mouse)[@theme-text];
+@menu-current-title-background-color: .make-theme-color(mouse)[@theme-background];
 @menu-hovered-color: .make-theme-color(mouse)[@theme-background];
 
 #grids {
@@ -36,15 +36,17 @@
             font-style: normal;
             padding: 0.5em;
 
+            &#current-article {
+              background-color: @menu-current-title-background-color;
+
+              a {
+                color: @menu-current-title-text-color;
+              }
+            }
+
             a {
               color: @menu-text-color;
               text-decoration: none;
-
-              &#current-article {
-                color: @menu-current-article-color;
-                font-weight: bold;
-                text-decoration: underline;
-              }
             }
           }
         }
@@ -77,12 +79,12 @@
       }
     }
 
-    &.hidden {
-      display: none;
+    &.show {
+      display: block;
     }
 
-    &.shown {
-      display: block;
+    &.hide {
+      display: none;
     }
   }
 }

@@ -11,10 +11,23 @@ export default {
     }
   },
   mounted() {
+    /* 現在描画している記事のタイトルをヘッダにコピーし, メニューをハイライトする. */
+    // 文書の構造上, 先頭は必ずヘッダの要素である.
+    let articleTitle = document.getElementsByTagName('h1')[1].innerHTML
+    let menu = document.getElementById('menu-list').getElementsByTagName('li')
+
+    for (let i = 0; i < menu.length; i++) {
+      if (menu[i].getElementsByTagName('a')[0].innerHTML === articleTitle) {
+        menu[i].id = 'current-article'
+        document.getElementById('app-title').innerHTML = articleTitle
+        break
+      }
+    }
+
     let oldSubmenu = document.getElementById('submenu')
 
     if (oldSubmenu === null) {
-      // 記事の目次をメニューにコピーする.
+      /* 記事の目次をメニューにコピーする. */
       let toc = document.getElementsByClassName('table-of-contents')[0]
       let menu = document.getElementById('menu')
       let submenu = document.createElement('div')
@@ -35,6 +48,18 @@ export default {
       nav.innerHTML = toc.innerHTML
       toc.outerHTML = null
     }
+  },
+  destroyed() {
+    let menu = document.getElementById('menu-list').getElementsByTagName('li')
+
+    for (let i = 0; i < menu.length; i++) {
+      if (menu[i].id) {
+        menu[i].removeAttribute('id')
+      }
+    }
+
+    document.getElementById('submenu').outerHTML = null
+    document.getElementById('app-title').innerHTML = 'RTMP Implementation Reports'
   }
 }
 </script>

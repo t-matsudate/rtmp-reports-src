@@ -1,6 +1,6 @@
 <template>
   <div class="menu-bar">
-    <a @click="slideSideMenu">
+    <a @click="switchToShow">
       <i class="fas fa-bars"></i>
     </a>
   </div>
@@ -9,15 +9,13 @@
 <script>
 export default {
   methods: {
-    slideSideMenu: function() {
-      let menu = document.getElementById("menu");
+    switchToShow(e) {
+      let menu = document.getElementById('menu')
 
-      if (menu.getAttribute("class") == "hidden") {
-        menu.setAttribute("class", "shown");
-      } else if (menu.getAttribute("class") == "shown") {
-        menu.setAttribute("class", "hidden");
+      if (menu.className === 'show') {
+        menu.className = 'hide'
       } else {
-        return;
+        menu.className = 'show'
       }
     }
   }

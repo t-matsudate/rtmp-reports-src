@@ -1,5 +1,5 @@
 <template>
-  <div id="menu" class="hidden">
+  <div id="menu" class="hide">
     <MenuBar />
     <div id="menu-list">
       <nav>
@@ -20,6 +20,19 @@ import MenuBar from './MenuBar.vue'
 export default {
   components: {
     MenuBar
+  },
+  methods: {
+    slideSideMenu(e) {
+      if (e.clientX > (window.innerWidth / 2)) {
+        document.getElementById('menu').className = 'hide'
+      }
+    }
+  },
+  mounted() {
+    window.addEventListener('click', this.slideSideMenu)
+  },
+  destroyed() {
+    window.removeEventListener('click', this.slideSideMenu)
   }
 }
 </script>
