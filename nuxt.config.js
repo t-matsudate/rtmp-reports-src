@@ -66,15 +66,15 @@ export default {
       },
       {
         rel: 'stylesheet',
-        href: 'https://use.fontawesome.com/releases/v5.12.0/css/solid.css'
+        href: 'https://use.fontawesome.com/releases/v5.12.1/css/solid.css'
       },
       {
         rel: 'stylesheet',
-        href: 'https://use.fontawesome.com/releases/v5.12.0/css/brands.css'
+        href: 'https://use.fontawesome.com/releases/v5.12.1/css/brands.css'
       },
       {
         rel: 'stylesheet',
-        href: 'https://use.fontawesome.com/releases/v5.12.0/css/fontawesome.css'
+        href: 'https://use.fontawesome.com/releases/v5.12.1/css/fontawesome.css'
       },
     ],
     script: [
