@@ -1,6 +1,6 @@
 <template>
   <article id="report">
-    <Author :author="author" :published="published" />
+    <Author :author="author" :published="published" :modified="modified" />
     <ReportTitle :report-title="title" />
     <Markdown :source="source" />
     <ShareButtons :text="title" :path="$route.path" />
@@ -25,6 +25,7 @@ export default {
     return {
       author: 'T.Matsudate',
       published: '2020-02-13',
+      modified: '2020-02-16',
       title: 'ハンドシェイクと Invoke 処理の実装',
       description: 'RTMP サーバをどのように実装していけばよいかについて, 接続開始から映像/音声の送受信直前までの実装で説明していく.',
       source: ConnectionImplementation
