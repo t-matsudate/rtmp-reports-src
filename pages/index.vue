@@ -20,6 +20,7 @@
       <li>
         <h2><nuxt-link to="/articles/connection-implementation">ハンドシェイクと Invoke 処理の実装</nuxt-link></h2>
         <ul class="datetime">
+          <li class="modified">更新日: <time :datetime="modified.connectionImplementation">{{ modified.connectionImplementation }}</time></li>
           <li class="published">投稿日: <time :datetime="published.connectionImplementation">{{ published.connectionImplementation }}</time></li>
         </ul>
         <p>記載内容：</p>
@@ -56,7 +57,8 @@ export default {
         connectionImplementation: '2020-02-13'
       },
       modified: {
-        overview: '2020-01-04'
+        overview: '2020-01-04',
+        connectionImplementation: '2020-02-16',
       },
     }
   },
